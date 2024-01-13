@@ -11,6 +11,10 @@ def create_user():
    data = supabase.table('users').insert({"email": data.get('email')}).execute()
    return jsonify({"message": f"User added successfully"}), 201
 
+@main.route('/', methods=['GET'])
+def ping():
+   return jsonify({"message": f"hello"}), 201
+
 def generate_hash():
     hash = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     response = supabase.table('lobbies').select('*').eq('hash', hash).execute()
