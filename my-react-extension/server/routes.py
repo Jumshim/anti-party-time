@@ -86,3 +86,23 @@ def join_lobby():
           "status": "error",
           "message": str(e)
        }), 500
+<<<<<<< HEAD
+=======
+    
+@main.route('/lobby', methods=['POST'])
+def track_lobby():
+   data = request.get_json()
+   user_id = data.get('user_id')
+   time_spent = data.get('time_spent')
+
+   website_url = request.args.get('url')
+   visit_time = datetime.datetime.now().isoformat()
+
+   data = {'website_url': website_url, 'visit_time': visit_time}
+   supabase.table(table_name).insert(data)
+
+   return f'Successfully tracked visit to {website_url} at {visit_time}'
+
+
+    
+>>>>>>> 9e1540a5 (initializing sites_list)
