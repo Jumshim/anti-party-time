@@ -11,10 +11,13 @@ def create_user():
    data = supabase.table('users').insert({"email": data.get('email')}).execute()
    return jsonify({"message": f"User added successfully"}), 201
 
+<<<<<<< HEAD:my-react-extension/server/routes.py
 @main.route('/', methods=['GET'])
 def ping():
    return jsonify({"message": f"hello"}), 201
 
+=======
+>>>>>>> 0a147bf9 (finished api endpoints for creating a user, creating a lobby, joining a lobby):server/routes.py
 def generate_hash():
     hash = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     response = supabase.table('lobbies').select('*').eq('hash', hash).execute()
@@ -23,8 +26,13 @@ def generate_hash():
     else: return Exception
 
 
+<<<<<<< HEAD:my-react-extension/server/routes.py
 def get_user(user_email):
    response = supabase.table('users').select('*').eq('email', user_email).execute()
+=======
+def get_user(user_id):
+   response = supabase.table('users').select('*').eq('id', user_id).execute()
+>>>>>>> 0a147bf9 (finished api endpoints for creating a user, creating a lobby, joining a lobby):server/routes.py
    return response.data[0]
 
 
@@ -34,14 +42,24 @@ def create_lobby():
       data = request.get_json()
 
       #pulling the user id
+<<<<<<< HEAD:my-react-extension/server/routes.py
       user_email = data.get('user_email')
+=======
+      user_id = data.get('user_id')
+      print(user_id)
+>>>>>>> 0a147bf9 (finished api endpoints for creating a user, creating a lobby, joining a lobby):server/routes.py
 
       lobby_hash = generate_hash()
       #Creating the lobby
       response = supabase.table('lobbies').insert({"hash": lobby_hash}).execute()
       lobby = response.data[0]
+<<<<<<< HEAD:my-react-extension/server/routes.py
       if user_email:
         user = get_user(user_email)
+=======
+      if user_id:
+        user = get_user(user_id)
+>>>>>>> 0a147bf9 (finished api endpoints for creating a user, creating a lobby, joining a lobby):server/routes.py
         if user:
            data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
       return jsonify({
@@ -58,6 +76,7 @@ def join_lobby():
     try:
       data = request.get_json()
       lobby_hash = data.get('hash')
+<<<<<<< HEAD:my-react-extension/server/routes.py
       user_email = data.get('user_email')
 
       response = supabase.table('lobbies').select('*').eq('hash', lobby_hash).execute()
@@ -66,6 +85,16 @@ def join_lobby():
           user = get_user(user_email)
 
           response = supabase.table('lobby_users').select('*').eq('user_id', user['id']).eq('lobby_id',lobby['id']).execute()
+=======
+      user_id = data.get('user_id')
+
+      response = supabase.table('lobbies').select('*').eq('hash', lobby_hash).execute()
+      lobby = response.data[0]
+      if lobby and user_id:
+          user = get_user(user_id)
+
+          response = supabase.table('lobby_users').select('*').eq('user_id', user_id).eq('lobby_id',lobby['id']).execute()
+>>>>>>> 0a147bf9 (finished api endpoints for creating a user, creating a lobby, joining a lobby):server/routes.py
           if response.count == None:
             data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
             return jsonify({
@@ -86,4 +115,9 @@ def join_lobby():
        return jsonify({
           "status": "error",
           "message": str(e)
+<<<<<<< HEAD:my-react-extension/server/routes.py
        }), 500
+=======
+       }), 500
+
+>>>>>>> 0a147bf9 (finished api endpoints for creating a user, creating a lobby, joining a lobby):server/routes.py

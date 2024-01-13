@@ -27,4 +27,8 @@ supabase: Client = create_client(url, key)
 #   hash = db.Column(db.String(6), unique=True, nullable=False)
 #   users = db.relationship('User', secondary=lobby_users, lazy='subquery',
 #                             backref=db.backref('lobbies', lazy=True))
+<<<<<<< HEAD:my-react-extension/server/models.py
 #   created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+=======
+#   created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+>>>>>>> 0a147bf9 (finished api endpoints for creating a user, creating a lobby, joining a lobby):server/models.py
