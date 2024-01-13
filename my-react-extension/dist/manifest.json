@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Test extension",
+  "version": "1.0",
+  "description": "React chrome extension",
+  "permissions": ["activeTab", "tabs", "storage"],
+  "background": {
+    "service_worker" : "background.js",
+    "type": "module"
+  }
+}

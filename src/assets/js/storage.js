@@ -2,7 +2,7 @@ import devStorage from './dev_storage';
 
 console.log("storage.js loading...");
 
-const STORAGE = process.env.NODE_ENV === 'development' ? devStorage : chrome.storage.local;
+const STORAGE = chrome.storage.local;
 const DEFAULT_CACHE = {
     active: {},
   };
