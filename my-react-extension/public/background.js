@@ -108,6 +108,7 @@ const getActiveTab = () => {
   });
 };
 
+//poop
 const end = async() => {
   let cacheStorage = await getCacheStorage();
   let active = cacheStorage;
