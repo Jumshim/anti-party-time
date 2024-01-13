@@ -21,7 +21,7 @@ const update = async(host, seconds) => {
       data[host] = 0;
   }
   data[host] += seconds;
-  save("sites", {data});
+  save("sites", data);
 }
 
 const save = (key, value) => {
@@ -90,8 +90,11 @@ const formatTime = (timeString) => {
 };
 
 const isTabAMatch = (tabUrl, site_dictionary) => {
+  console.log("matching...")
   const allSites = Object.keys(site_dictionary)
   const tabUrlParts = tabUrl.split(".")
+  console.log(tabUrlParts)
+  console.log(allSites)
   return tabUrlParts.some(part => {
       return allSites.includes(part)
   });
@@ -108,6 +111,7 @@ const getActiveTab = () => {
   });
 };
 
+//poop
 const end = async() => {
   let cacheStorage = await getCacheStorage();
   let active = cacheStorage;
@@ -169,9 +173,14 @@ const setActive = async () => {
     const activeTab = await getActiveTab();
     console.log("activeTab: ", activeTab);
     if (activeTab) {
+      console.log("activeTab is true")
       const { url, id } = activeTab;
       const name = getName(url);
       const configuration = await getData('sites');
+      console.log("logging name and config:")
+      console.log(name);
+      console.log(configuration)
+      console.log()
       if (isTabAMatch(name, configuration)) {
         console.log("tab is a match :D");
         const cacheStorage = await getCacheStorage();
