@@ -7,9 +7,6 @@ console.log("background.js loading...");
 //storage commands
 
 const STORAGE = chrome.storage.local;
-const DEFAULT_CACHE = {
-    active: {},
-};
 
 const getData = (key) => {
   return new Promise((resolve) => {
@@ -18,6 +15,7 @@ const getData = (key) => {
 };
 
 const update = async(host, seconds) => {
+  console.log(host, "updating...");
   let data = await getData("sites");
   if (!data[host]) {
       data[host] = 0;
@@ -27,6 +25,7 @@ const update = async(host, seconds) => {
 }
 
 const save = (key, value) => {
+  console.log("saving...",key,value);
   return new Promise((resolve) => {
       STORAGE.set({ [key]: value }, () => {
           resolve();
@@ -41,7 +40,6 @@ const getCurrentDate = () => {
 const getCacheStorage = async() => {
   const cache = await getData('cache');
   return {
-    ...DEFAULT_CACHE,
     ...cache,
   }
 }
@@ -91,7 +89,6 @@ const formatTime = (timeString) => {
   return `${pad(hour)}:${pad(minute)}`;
 };
 
-
 const isTabAMatch = (tabUrl, site_dictionary) => {
   const allSites = Object.keys(site_dictionary)
   const tabUrlParts = tabUrl.split(".")
@@ -121,6 +118,7 @@ const end = async() => {
       const moment = Date.now();
       const seconds = parseInt((moment - start) / 1000, 10);
       cacheStorage = {};
+      console.log("adding...", seconds, "to ", active.name);
       update(active.name, seconds);
       return cacheStorage;
   }
@@ -169,11 +167,13 @@ const getBarBackgroundColors = (siteKeys, allSitesConfig) => {
 
 const setActive = async () => {
     const activeTab = await getActiveTab();
+    console.log("activeTab: ", activeTab);
     if (activeTab) {
       const { url, id } = activeTab;
       const name = getName(url);
       const configuration = await getData('sites');
       if (isTabAMatch(name, configuration)) {
+        console.log("tab is a match :D");
         const cacheStorage = await getCacheStorage();
         if (cacheStorage.name !== name) {
           await save('cache', {
@@ -230,4 +230,4 @@ initialize();
 setInterval(() => {
   console.log(getData("sites"));
   console.log(getData("cache"));
-}, 5000);
+}, 20000);
