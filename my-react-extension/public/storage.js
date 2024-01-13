@@ -2,12 +2,12 @@ import devStorage from '../src/assets/js/dev_storage';
 
 console.log("storage.js loading...");
 
-const STORAGE = chrome.storage.local;
+const STORAGE = devStorage;
 const DEFAULT_CACHE = {
     active: {},
   };
 
-export default class storage{
+export default{
     async update(host, seconds) {
         let data = await this.getData("sites");
         if (!data[host]) {
