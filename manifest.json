@@ -1,9 +1,0 @@
-{
-  "manifest_version": 3,
-  "name": "Tab Manager for Chrome Dev Docs",
-  "version": "1.0",
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "host_permissions": ["https://developer.chrome.com/*"]
-}
