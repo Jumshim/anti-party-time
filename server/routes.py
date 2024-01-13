@@ -19,8 +19,8 @@ def generate_hash():
     else: return Exception
 
 
-def get_user(user_id):
-   response = supabase.table('users').select('*').eq('id', user_id).execute()
+def get_user(user_email):
+   response = supabase.table('users').select('*').eq('email', user_email).execute()
    return response.data[0]
 
 
@@ -30,15 +30,14 @@ def create_lobby():
       data = request.get_json()
 
       #pulling the user id
-      user_id = data.get('user_id')
-      print(user_id)
+      user_email = data.get('user_email')
 
       lobby_hash = generate_hash()
       #Creating the lobby
       response = supabase.table('lobbies').insert({"hash": lobby_hash}).execute()
       lobby = response.data[0]
-      if user_id:
-        user = get_user(user_id)
+      if user_email:
+        user = get_user(user_email)
         if user:
            data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
       return jsonify({
@@ -55,14 +54,14 @@ def join_lobby():
     try:
       data = request.get_json()
       lobby_hash = data.get('hash')
-      user_id = data.get('user_id')
+      user_email = data.get('user_email')
 
       response = supabase.table('lobbies').select('*').eq('hash', lobby_hash).execute()
       lobby = response.data[0]
-      if lobby and user_id:
-          user = get_user(user_id)
+      if lobby and user_email:
+          user = get_user(user_email)
 
-          response = supabase.table('lobby_users').select('*').eq('user_id', user_id).eq('lobby_id',lobby['id']).execute()
+          response = supabase.table('lobby_users').select('*').eq('user_id', user['id']).eq('lobby_id',lobby['id']).execute()
           if response.count == None:
             data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
             return jsonify({
