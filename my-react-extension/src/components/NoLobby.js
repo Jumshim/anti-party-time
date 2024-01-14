@@ -19,6 +19,9 @@ const NoLobby = () => {
     };
 
     const handleJoinSubmit = (keyData) => {
+
+
+
         setKeyData(keyData);
     };
     
