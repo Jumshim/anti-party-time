@@ -45,11 +45,13 @@ const CreateLobby = () => {
 
   const getLobby = async () => {
     const queryParams = {
-      user_email: currentUser.email,
-      sites: siteList,
+      "user_email": currentUser.email,
+      "sites": siteList,
     };
 
-    const response = fetch("http://127.0.0.1:5000/createlobby", {
+    console.log(JSON.stringify(queryParams))
+
+    const response = fetch("http://127.0.0.1:5000/createlobby?", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -58,6 +60,7 @@ const CreateLobby = () => {
       body: JSON.stringify(queryParams),
     })
       .then((response) => {
+        //console.log(`response fetched: ${JSON.stringify(response)}`);
         return response?.json();
       })
       .then((data) => {
@@ -66,6 +69,23 @@ const CreateLobby = () => {
         setLobbyCreated(true);
       });
   };
+
+  const InitWebsites = (siteList) => {
+    let websites = siteList;
+    //note*** replace with post call to get websites with lobbyKey
+    const webDict = {};
+
+    console.log("CREATELOBBY: ", websites)
+
+    websites.forEach((website) => {
+      webDict[website] = 0;
+    });
+
+    console.log(webDict);
+
+    cslFuncs.initialize("sites", webDict);
+  };
+
 
   useEffect(() => {
     const newSiteList = location.state?.sites;
@@ -76,7 +96,11 @@ const CreateLobby = () => {
 
   useEffect(() => {
     if (siteList?.length > 0) {
+      console.log(`calling getLobby()`);
       getLobby();
+      setLobbyCreated(true);
+
+      InitWebsites(siteList);
     }
   }, [siteList]);
 

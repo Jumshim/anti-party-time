@@ -33,11 +33,51 @@ const SingleCharacter = ({ char }) => {
   );
 };
 
+
 const JoinLobby = () => {
   const navigate = useNavigate();
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
   const [inputValue, setInputValue] = useState("");
+  const [siteList, setSiteList] = useState([]);
+
+  const getSites = async (lobbyKey) => {
+    const queryParams = new URLSearchParams({
+        hash: lobbyKey //place holder for lobby hash
+    });
+  
+    const response = await fetch("http://127.0.0.1:5000/getsites?" + queryParams, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+      if (!response.ok) {
+        throw new Error(`Failed to fetch lobby. Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log("data: ", data?.data)
+      setSiteList(data?.data);
+      return data;
+  };
+  
+  const InitWebsites = () => {
+    let websites = siteList;
+    //note*** replace with post call to get websites with lobbyKey
+    const webDict = {};
+  
+    console.log("CREATELOBBY: ", websites)
+  
+    websites.forEach((website) => {
+      webDict[website] = 0;
+    });
+  
+    console.log(webDict);
+  
+    cslFuncs.initialize("sites", webDict);
+  };
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -66,6 +106,37 @@ const JoinLobby = () => {
         navigate("/profile");
       });
   };
+
+  useEffect (() => {
+    const fetchData = async () => {
+      try {
+
+        if (inputValue) {
+          const sitesResponse = await getSites(inputValue);
+          console.log('Sites Response:', sitesResponse);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [inputValue]);
+
+  useEffect (() => {
+    const fetchData = async () => {
+      try {
+
+        if (siteList) {
+          InitWebsites(siteList);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [siteList]);
 
   return (
     <div css={MainDiv}>
