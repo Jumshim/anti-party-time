@@ -1,13 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
 import React, { useContext, useState, useEffect } from "react";
-import SiteListForm from "./SiteListForm";
-import "./buttons.css";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
+import cslFuncs from "./cslFuncs";
 
 const MainDiv = css`
   display: flex;
@@ -34,35 +33,51 @@ const SingleCharacter = ({ char }) => {
 
 const CreateLobby = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [lobbyHash, setLobbyHash] = useState("");
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
+  const [siteList, setSiteList] = useState([]);
 
   const getLobby = async () => {
+    console.log(
+      `getting lobby with user_email: ${currentUser.email}, sites: ${siteList}`
+    );
     const queryParams = {
       user_email: currentUser.email,
-      sites: ["instagram", "youtube"]
+      sites: siteList,
     };
 
-    const response = await fetch("http://127.0.0.1:5000/createlobby?", {
+    const response = fetch("http://127.0.0.1:5000/createlobby", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-      body: queryParams,
+      body: JSON.stringify(queryParams),
     })
       .then((response) => {
         return response?.json();
       })
       .then((data) => {
+        console.log(`setting lobby hash`);
         setLobbyHash(data.data.lobby_hash);
+        console.log(`access token: ${accessToken}`);
       });
   };
 
   useEffect(() => {
-    getLobby();
-  }, []);
+    const newSiteList = location.state?.sites;
+    if (newSiteList && newSiteList.length > 0) {
+      setSiteList(newSiteList);
+    }
+  }, [location.state?.sites]);
+
+  useEffect(() => {
+    if (siteList.length > 0) {
+      getLobby();
+    }
+  }, [siteList]);
 
   return (
     <div css={MainDiv}>

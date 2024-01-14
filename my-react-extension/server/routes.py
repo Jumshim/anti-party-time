@@ -31,21 +31,33 @@ def generate_hash():
 @main.route('/createlobby', methods=['POST'])
 def create_lobby():
     try:
-      data = request.args
+      print('trying to json request')
+      data = request.get_json()
 
       #pulling the user id
+      print("CREATING LOBBY")
 
       user_email = data.get('user_email')
+      print("email: ",user_email)
       sites = data.get('sites')
+      print("sites: ", sites)
+
       lobby_hash = generate_hash()
+      print("lobby hash: ", lobby_hash)
       #Creating the lobby
       response = supabase.table('lobbies').insert({"hash": lobby_hash, "sites": sites}).execute()
+      print(f"response: {response}")
       lobby = response.data[0]
+      print(f"lobby: {lobby}")
+
+      print ("lobby: ", lobby)
 
       if user_email:
         user = get_user(user_email)
+        print("user: ", user)
         if user:
-           data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id'], "sites": sites}).execute()
+           data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
+           print("data: ", data)
       return jsonify({
           "status": "success",
           "data": {"lobby_hash": lobby_hash}
