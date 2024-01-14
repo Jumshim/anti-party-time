@@ -31,21 +31,17 @@ def generate_hash():
 @main.route('/createlobby', methods=['POST'])
 def create_lobby():
     try:
-      data = request.get_json()
+      print('trying to json request')
+      data = request.json()
 
       #pulling the user id
-<<<<<<< HEAD
       print("CREATING LOBBY")
 
       user_email = data.get('user_email')
       print("email: ",user_email)
       sites = data.get('sites')
       print("sites: ", sites)
-=======
-      user_email = data.get('user_email')
-      sites = data.get('sites').split(",")
-      print(f"sites: {sites}, typeof sites: {type(sites)}")
->>>>>>> 37770e61 (initial commits)
+
       lobby_hash = generate_hash()
       print("lobby hash: ", lobby_hash)
       #Creating the lobby
@@ -58,12 +54,7 @@ def create_lobby():
 
       if user_email:
         user = get_user(user_email)
-<<<<<<< HEAD
         print("user: ", user)
-=======
-        print(f"user: {user}")
-
->>>>>>> 37770e61 (initial commits)
         if user:
            data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
            print("data: ", data)
