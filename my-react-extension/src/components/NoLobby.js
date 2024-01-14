@@ -53,8 +53,66 @@ const NoLobby = () => {
   //     cslFuncs.initialize("sites", webDict);
   //   };
 
+  const initLobby = (lobbyKey) => {
+    //get lobby key and pass into param
+    cslFuncs.initialize("lobby", {'id':lobbyKey});
+  };
+
+  const initUsersAndRankings = (lobbyKey) => {
+    //make call to track lobby assume that return type is as follows, if mismatch try to change format of users from track lobby
+    const data = {
+      'rankings' : [
+        [
+          3,  // user id
+          200,  // total seconds watched
+          1 // ranking (descending)
+        ], 
+        [2, 115, 2] 
+      ],
+      "users": {
+        "2": {
+          "email": "test@email.com", 
+          "name": "Test", 
+          "sites": {
+            "facebook": 15, 
+            "youtube": 100
+          }
+        },
+        
+        "3": {
+          "email": "smyan@email.com", 
+          "name": "Smyan", 
+          "sites": {
+          "\"instagram.com": 200
+          }
+        }  
+      }
+    }
+
+    cslFuncs.initialize("rankings", data['rankings']);
+    cslFuncs.initialize("users", data['users']);
+
+    const printTest = async () => {
+      const initRankings = await cslFuncs.getData('rankings');
+      const initUsers = await cslFuncs.getData('users');
+      
+      console.log('testing rankings and users init')
+      console.log(initRankings)
+      console.log(initUsers)
+    };
+    printTest();
+
+
+  }
+
+
   const handleCreateClick = () => {
+<<<<<<< HEAD
     navigate("/add_sites");
+=======
+    initUsersAndRankings(909);
+    //navigate("/create_lobby");
+>>>>>>> f27ada44 (finished background work)
   };
 
   const handleJoinClick = () => {

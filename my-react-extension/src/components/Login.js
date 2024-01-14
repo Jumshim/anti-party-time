@@ -41,7 +41,7 @@ export async function getCurrentUser() {
   return null;
 }
 
-export default function Login() {
+export default function () {
   async function signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -56,7 +56,7 @@ export default function Login() {
   return (
     <div>
       <button css={buttonStyles.default} onClick={signInWithGoogle}>
-        Login
+        
       </button>
     </div>
   );
