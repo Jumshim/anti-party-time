@@ -3,10 +3,10 @@
   "name": "Test extension",
   "version": "1.0",
   "description": "React chrome extension",
-  "permissions": ["activeTab", "tabs", "storage"],
+  "permissions": ["activeTab", "tabs", "storage", "identity"],
   "host_permissions": ["http://127.0.0.1:5000/"],
   "background": {
-    "service_worker" : "background.js",
+    "service_worker": "background.js",
     "type": "module"
   },
   "action": {
