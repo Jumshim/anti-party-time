@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 
-const SiteListForm = ({ onSubmit }) => {
-    const [websiteList, setWebsiteList] = useState('');
+const JoinLobby = ({ onSubmit }) => {
+    const [lobbyKey, setLobbyKey] = useState('');
   
     const handleSubmit = (e) => {
       e.preventDefault();
       // Validate and process the website list
-      if (websiteList.trim() !== '') {
-        onSubmit(websiteList.split(' '));
+      if (lobbyKey.trim() !== '') {
+        onSubmit(lobbyKey);
       }
     };
   
     return (
       <form onSubmit={handleSubmit}>
         <label>
-          Enter a list of websites (space between):
+          Please Enter Lobby Key:
           <textarea
-            value={websiteList}
-            onChange={(e) => setWebsiteList(e.target.value)}
+            value={lobbyKey}
+            onChange={(e) => setLobbyKey(e.target.value)}
           />
         </label>
         <button type="submit">Submit</button>
@@ -25,4 +25,4 @@ const SiteListForm = ({ onSubmit }) => {
     );
   };
   
-  export default SiteListForm;
+  export default JoinLobby;
