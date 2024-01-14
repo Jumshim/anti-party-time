@@ -23,16 +23,37 @@ const MainDiv = css`
 const NoLobby = () => {
   const navigate = useNavigate();
 
-  const initWebsites = (lobbyKey) => {
-    const websites = ["youtube", "facebook", "instagram"]; //note*** replace with post call to get websites with lobbyKey
-    const webDict = {};
+//   const getSites = async (lobbyKey) => {
+//     const queryParams = new URLSearchParams({
+//         hash: "000000" //place holder for lobby hash
+//     });
 
-    websites.forEach((website) => {
-      webDict[website] = 0;
-    });
+//     const response = await fetch("http://127.0.0.1:5000/getsites?" + queryParams, {
+//         method: "GET",
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//           "Content-Type": "application/json",
+//         },
+//       })
+//       .then((response) => {
+//         return response?.json();
+//       })
+//       .then((data) => {
+//         return (data.data.siteList);
+//       });
+//   };
 
-    cslFuncs.initialize("sites", webDict);
-  };
+//   const initWebsites = (lobbyKey) => {
+//     const websites = getSites(lobbyKey)
+//     //const websites = ["youtube", "facebook", "instagram"]; //note*** replace with post call to get websites with lobbyKey
+//     const webDict = {};
+
+//     websites.forEach((website) => {
+//       webDict[website] = 0;
+//     });
+
+//     cslFuncs.initialize("sites", webDict);
+//   };
 
   const handleCreateClick = () => {
     navigate("/create_lobby");

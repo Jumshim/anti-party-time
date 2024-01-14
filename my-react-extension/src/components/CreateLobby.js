@@ -8,6 +8,7 @@ import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
+import cslFuncs from "./cslFuncs";
 
 const MainDiv = css`
   display: flex;
@@ -37,6 +38,7 @@ const CreateLobby = () => {
   const [lobbyHash, setLobbyHash] = useState("");
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
+  const [siteList, setSiteList] = useState([]);
 
   const getLobby = async () => {
     const queryParams = {
@@ -50,7 +52,7 @@ const CreateLobby = () => {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-      body: queryParams,
+      body: JSON.stringify(queryParams),
     })
       .then((response) => {
         return response?.json();
@@ -60,8 +62,44 @@ const CreateLobby = () => {
       });
   };
 
+  const getSites = async (lobbyKey) => {
+    const queryParams = new URLSearchParams({
+        hash: lobbyKey //place holder for lobby hash
+    });
+
+    const response = await fetch("http://127.0.0.1:5000/getsites?" + queryParams, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        return response?.json();
+      })
+      .then((data) => {
+        console.log("data: ", data)
+        setSiteList(data?.data?.siteList);
+      });
+  };
+
+  const initWebsites = (lobbyKey) => {
+    const response = getSites(lobbyKey);
+    const websites = siteList; //note*** replace with post call to get websites with lobbyKey
+    const webDict = {};
+
+    console.log("CREATELOBBY: ", websites)
+
+    websites.forEach((website) => {
+      webDict[website] = 0;
+    });
+
+    cslFuncs.initialize("sites", webDict);
+  };
+
   useEffect(() => {
     getLobby();
+    initWebsites(lobbyHash);
   }, []);
 
   return (

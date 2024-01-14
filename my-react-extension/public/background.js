@@ -5,7 +5,7 @@ const url = "http://127.0.0.1:5000/";
 
 fetch(url)
   .then((response) => {
-    console.log(response);
+    // console.log(response);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -18,7 +18,7 @@ fetch(url)
     console.error("Error:", error);
   });
 
-console.log("background.js loading...");
+// console.log("background.js loading...");
 
 //storage commands
 
@@ -33,7 +33,7 @@ const getData = (key) => {
 };
 
 const update = async (host, seconds) => {
-  console.log(host, "updating...");
+  // console.log(host, "updating...");
   let data = await getData("sites");
   if (!data[host]) {
     data[host] = 0;
@@ -43,7 +43,7 @@ const update = async (host, seconds) => {
 };
 
 const save = (key, value) => {
-  console.log("saving...", key, value);
+  // console.log("saving...", key, value);
   return new Promise((resolve) => {
     STORAGE.set({ [key]: value }, () => {
       resolve();
@@ -104,11 +104,11 @@ const formatTime = (timeString) => {
 };
 
 const isTabAMatch = (tabUrl, site_dictionary) => {
-  console.log("matching...");
+  // console.log("matching...");
   const allSites = Object.keys(site_dictionary);
   const tabUrlParts = tabUrl.split(".");
-  console.log(tabUrlParts);
-  console.log(allSites);
+  // console.log(tabUrlParts);
+  // console.log(allSites);
   return tabUrlParts.some((part) => {
     return allSites.includes(part);
   });
@@ -139,7 +139,7 @@ const end = async () => {
     const moment = Date.now();
     const seconds = parseInt((moment - start) / 1000, 10);
     cacheStorage = {};
-    console.log("adding...", seconds, "to ", active.name);
+    // console.log("adding...", seconds, "to ", active.name);
     update(active.name, seconds);
     return cacheStorage;
   }
@@ -185,18 +185,18 @@ const getBarBackgroundColors = (siteKeys, allSitesConfig) => {
 
 const setActive = async () => {
   const activeTab = await getActiveTab();
-  console.log("activeTab: ", activeTab);
+  // console.log("activeTab: ", activeTab);
   if (activeTab) {
-    console.log("activeTab is true");
+    // console.log("activeTab is true");
     const { url, id } = activeTab;
     const name = getName(url);
     const configuration = await getData("sites");
-    console.log("logging name and config:");
-    console.log(name);
-    console.log(configuration);
-    console.log();
+    // console.log("logging name and config:");
+    // console.log(name);
+    // console.log(configuration);
+    // console.log();
     if (isTabAMatch(name, configuration)) {
-      console.log("tab is a match :D");
+      // console.log("tab is a match :D");
       const cacheStorage = await getCacheStorage();
       if (cacheStorage.name !== name) {
         await save("cache", {
@@ -210,7 +210,7 @@ const setActive = async () => {
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   const { url } = tab;
-  console.log(url);
+  // console.log(url);
   const name = getName(url);
   const cacheStorage = await getCacheStorage();
   if (cacheStorage.name !== name) {
@@ -251,8 +251,8 @@ const initialize = async () => {
 initialize();
 
 setInterval(() => {
-  console.log(getData("sites"));
-  console.log(getData("cache"));
+  // console.log(getData("sites"));
+  // console.log(getData("cache"));
 }, 20000);
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
