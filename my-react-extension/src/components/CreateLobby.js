@@ -40,6 +40,7 @@ const CreateLobby = () => {
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
   const [siteList, setSiteList] = useState([]);
+  const [returnedSiteList, setReturnedSiteList] = useState([]);
 
   const getLobby = async () => {
     const queryParams = {
@@ -71,59 +72,11 @@ const CreateLobby = () => {
   }, [location.state?.sites]);
 
   useEffect(() => {
-    if (siteList.length > 0) {
-      getLobby()
-        .then((lobbyResponse) => {
-          return lobbyResponse?.data?.lobby_hash;
-        })
-        .then((lobbyHash) => {
-          getSites(lobbyHash);
-        })
-        .then((sitesResponse) => {
-          InitWebsites(sitesResponse?.data);
-        });
+    if (siteList?.length > 0) {
+      getLobby();
+      setLobbyCreated(true);
     }
   }, [siteList]);
-
-  const getSites = async (lobbyKey) => {
-    const queryParams = new URLSearchParams({
-      hash: lobbyKey, //place holder for lobby hash
-    });
-
-    const response = await fetch(
-      "http://127.0.0.1:5000/getsites?" + queryParams,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`Failed to fetch lobby. Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    setSiteList(data?.data?.siteList);
-    return data;
-  };
-
-  const InitWebsites = (siteList) => {
-    let websites = siteList;
-    //note*** replace with post call to get websites with lobbyKey
-    const webDict = {};
-
-    console.log("CREATELOBBY: ", websites);
-
-    websites.forEach((website) => {
-      webDict[website] = 0;
-    });
-
-    console.log(webDict);
-
-    cslFuncs.initialize("sites", webDict);
-  };
 
   return (
     <div css={MainDiv}>

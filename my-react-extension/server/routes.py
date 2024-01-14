@@ -40,12 +40,7 @@ def create_lobby():
       user_email = data.get('user_email')
       # print("email: ",user_email)
       sites = data.get('sites')
-<<<<<<< HEAD
-      print("sites: ", sites)
-
-=======
       # print("sites: ", sites)
->>>>>>> finished init websites
       lobby_hash = generate_hash()
       # print("lobby hash: ", lobby_hash)
       #Creating the lobby
