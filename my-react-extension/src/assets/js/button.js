@@ -29,9 +29,9 @@ export const buttonStyles = {
   `,
   outline: css`
     ${typography.p}
-    padding: 8px 16px;
+    padding: 5px 10px;
     border-radius: 16px;
-    border: 0.2rem solid #0f172a;
+    border: 0.1rem solid #0f172a;
     background-color: #f1f5f9;
     color: #0f172a;
     &:hover {
