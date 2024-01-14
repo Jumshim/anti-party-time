@@ -111,14 +111,16 @@ def track_lobby():
         lobby_hash = data.get('hash')
         print("lobby hash: ", lobby_hash)
         lobby_id = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute().data[0]["id"]
+        print("lobby_id: ", lobby_id)
         response = supabase.table('lobby_users').select('user_id').eq('lobby_id', lobby_id).execute().data
-        users = [item['user_id'] for item in response]
+        print("response: ", response)
+        users = [item['user_id'] for item in response] # array of user_ids
         ranking = {}
 
         #[1,2,3]
 
         finalResponse = []
-
+        # if empty, maybe hash is wrong
         for user in users:
             print("user id: ", user)
             userData = {}
@@ -133,10 +135,13 @@ def track_lobby():
 
             totalTime = 0
             for site in sitesResponse:
+                print("site: ", site['website'])
                 sitesData[site['website']] = site['time_spent']
                 totalTime += site['time_spent']
             
-            ranking[user] = totalTime
+            print("ranking", ranking)
+            ranking[user] = (totalTime, userInfo[0]["email"])
+            print("ranking2", ranking)
 
             userData[user]["sites"] = sitesData
 
@@ -144,12 +149,12 @@ def track_lobby():
 
         print("ranking: ", ranking)
         
-        sorted_ranking = dict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
+        sorted_ranking = dict(sorted(ranking.items(), key=lambda x: x[1]))
         
         listRank = []
 
         for index, (key,value) in enumerate(sorted_ranking.items()):
-           listRank.append((key, value, index+1))
+           listRank.append((value[1], key, value[0], index+1))
 
         return jsonify({
           "status": "success",
