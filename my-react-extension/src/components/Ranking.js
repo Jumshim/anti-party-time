@@ -47,7 +47,7 @@ export const Ranking = () => {
             justify-content: center;
           `}
         >
-          Ranking
+          👑 Ranking
         </text>
       </div>
     </div>

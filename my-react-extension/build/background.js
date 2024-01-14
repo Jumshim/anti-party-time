@@ -1,28 +1,7 @@
 // import utils from './js';
 // import storage from './storage.js';
 
-<<<<<<< HEAD
-const url = "http://127.0.0.1:5000/";
-
-fetch(url)
-  .then((response) => {
-    // console.log(response);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then((data) => {
-    console.log("Success:", data);
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-  });
-
-// console.log("background.js loading...");
-=======
 console.log("background.js loading...");
->>>>>>> 37770e61 (initial commits)
 
 //storage commands
 
