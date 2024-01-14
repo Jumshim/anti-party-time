@@ -7,6 +7,7 @@ import CreateLobby from "./components/CreateLobby";
 import AddSites from "./components/AddSites";
 import Profile from "./components/Profile";
 import JoinLobby from "./components/JoinLobby";
+import Ranking from "./components/Ranking";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/create_lobby" element={<CreateLobby />} />
             <Route path="/join_lobby" element={<JoinLobby />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/ranking" element={<Ranking />} />
           </Routes>
         </Router>
       </div>
