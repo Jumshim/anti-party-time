@@ -108,7 +108,7 @@ const IndividualTime = ({ domain, seconds, totalSeconds }) => {
 };
 
 export const Profile = () => {
-  const { currentUser, accessToken, isAuthCheckComplete, signOut } =
+  const { currentUser, accessToken, isAuthCheckComplete, lobby, signOut } =
     useContext(UserContext);
 
   const navigate = useNavigate();
@@ -178,6 +178,17 @@ export const Profile = () => {
         >
           {" "}
           {currentUser.user_metadata.name}
+        </text>
+        <text
+          css={css`
+            ${typography.muted}
+            padding: 3px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+          `}
+        >
+          Lobby: {lobby}
         </text>
         <text
           css={css`

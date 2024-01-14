@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SiteListForm from "./SiteListForm";
 import cslFuncs from "./cslFuncs";
 import { css } from "@emotion/react";
@@ -8,6 +8,7 @@ import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
 import { useNavigate } from "react-router-dom";
 import { getData } from "./Authenticate";
+import { UserContext } from "../assets/js/UserContext";
 
 const MainDiv = css`
   display: flex;
@@ -21,12 +22,14 @@ const MainDiv = css`
 
 const NoLobby = () => {
   const navigate = useNavigate();
+  const { setLobby } = useContext(UserContext);
 
   useEffect(() => {
     const getLobby = async () => {
       let lobby = await getData("lobby");
       if (lobby && lobby["id"]) {
         console.log(`found lobby`);
+        setLobby(lobby["id"]);
         navigate("/profile");
         return;
       }
