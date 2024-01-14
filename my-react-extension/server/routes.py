@@ -132,5 +132,38 @@ def create_user2():
           "message": str(e)
        }), 500
 
+@main.route('/sites_list', methods=['POST'])
+def watch_times():
+   try:
+        data = request.get_json()
+        user_email = data.get('user_email')
+        user = get_user(user_email)
+        user_id = user['id']
+        lobby_hash = data.get('hash')
+        website = data.get('website')
+        time_spent = data.get('time_spent')
 
+        lobbyIdResponse = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute()
+        lobby_id = lobbyIdResponse.data[0]['id']
+
+        if not time_spent:
+            return jsonify({"status": "error", "message": "User ID, Lobby ID, Website, and Time Spent are required"}), 400
+        
+        existing_user = supabase.table('users').select('*').eq('email', user_email).execute().data
+        if not existing_user:
+            return jsonify({"status": "error", "message": "User with the provided ID does not exist"}), 404
+
+        # Update watch times 
+
+        conflictFields = ['id', 'website']
+
+        response = supabase.table('sites_list').upsert(
+            {"id": user_id, "lobby_id": lobby_id, "website": website, "time_spent": time_spent},
+            on_conflict=conflictFields).execute()
+
+        return jsonify({"status": "success", "message": f"Successfully updated watch times for user {user_id}"}), 200
+   except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+   
     
