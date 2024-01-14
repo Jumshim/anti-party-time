@@ -41,6 +41,17 @@ export async function getCurrentUser() {
   return null;
 }
 
+// export async function getCurrentLobby() {
+//   const lobbyHash = (await chrome.storage.local.get("lobby")["id"])[
+//     chromeStorageKeys.gauthAccessToken
+//   ];
+
+//   if (lobbyHash) {
+//     return { lobbyHash };
+//   }
+//   return null;
+// }
+
 export default function Login() {
   async function signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({

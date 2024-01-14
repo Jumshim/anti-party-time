@@ -18,27 +18,28 @@ const MainDiv = css`
   height: 400px;
 `;
 
+const STORAGE = chrome.storage.local;
+
+export const getData = (key) => {
+  return new Promise((resolve) => {
+    STORAGE.get(key, (result) =>
+      result[key] ? resolve(result[key]) : resolve({})
+    );
+  });
+};
+
 export default function Authenticate() {
-  const { currentUser, accessToken, isAuthCheckComplete } =
+  const { currentUser, accessToken, isAuthCheckComplete, lobby } =
     useContext(UserContext);
   const [hasLobby, setHasLobby] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const STORAGE = chrome.storage.local;
-
-    const getData = (key) => {
-      return new Promise((resolve) => {
-        STORAGE.get(key, (result) =>
-          result[key] ? resolve(result[key]) : resolve({})
-        );
-      });
-    };
-
     const checkLobby = async () => {
       let lobby = await getData("lobby");
       if (lobby && lobby["id"]) {
         setHasLobby(true);
+        return;
       }
     };
 

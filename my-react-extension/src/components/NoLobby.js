@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SiteListForm from "./SiteListForm";
 import cslFuncs from "./cslFuncs";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
 import { useNavigate } from "react-router-dom";
+import { getData } from "./Authenticate";
 
 const MainDiv = css`
   display: flex;
@@ -21,37 +22,18 @@ const MainDiv = css`
 const NoLobby = () => {
   const navigate = useNavigate();
 
-  //   const getSites = async (lobbyKey) => {
-  //     const queryParams = new URLSearchParams({
-  //         hash: "000000" //place holder for lobby hash
-  //     });
+  useEffect(() => {
+    const getLobby = async () => {
+      let lobby = await getData("lobby");
+      if (lobby && lobby["id"]) {
+        console.log(`found lobby`);
+        navigate("/profile");
+        return;
+      }
+    };
 
-  //     const response = await fetch("http://127.0.0.1:5000/getsites?" + queryParams, {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       })
-  //       .then((response) => {
-  //         return response?.json();
-  //       })
-  //       .then((data) => {
-  //         return (data.data.siteList);
-  //       });
-  //   };
-
-  //   const initWebsites = (lobbyKey) => {
-  //     const websites = getSites(lobbyKey)
-  //     //const websites = ["youtube", "facebook", "instagram"]; //note*** replace with post call to get websites with lobbyKey
-  //     const webDict = {};
-
-  //     websites.forEach((website) => {
-  //       webDict[website] = 0;
-  //     });
-
-  //     cslFuncs.initialize("sites", webDict);
-  //   };
+    getLobby();
+  }, []);
 
   const handleCreateClick = () => {
     navigate("/add_sites");

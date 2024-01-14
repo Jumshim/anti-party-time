@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
+import cslFuncs from "./components/cslFuncs";
 // import utils from './utils.js'
 // import storage from './storage.js'
 
 const STORAGE = chrome.storage.local;
 
-const getData = (key) => {
+export const getData = (key) => {
   return new Promise((resolve) => {
     STORAGE.get(key, (result) =>
       result[key] ? resolve(result[key]) : resolve({})
     );
   });
+};
+
+export const initLobby = (lobbyKey) => {
+  //get lobby key and pass into param
+  console.log(`initializing lobby to ${lobbyKey}`);
+  cslFuncs.initialize("lobby", { id: lobbyKey });
 };
 
 const DynamicText = (props) => {

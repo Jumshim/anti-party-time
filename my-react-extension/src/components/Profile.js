@@ -16,11 +16,31 @@ const MainDiv = css`
   height: 400px;
 `;
 
-const Profile = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [lobbyCreated, setLobbyCreated] = useState(false);
-  const [lobbyHash, setLobbyHash] = useState("");
+const CircularImage = css`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 0.1rem solid black;
+`;
+
+const ProfilePicture = ({ img }) => {
+  return (
+    <div
+      css={css`
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        display: flex;
+        margin: 10px;
+      `}
+    >
+      <img css={CircularImage} src={img} />
+    </div>
+  );
+};
+
+export const Profile = () => {
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
   const [siteList, setSiteList] = useState([]);
@@ -33,9 +53,25 @@ const Profile = () => {
           justify-content: center;
           align-items: center;
           align-content: center;
+          max-height: 400px;
+          overflow-y: scroll;
+          width: 80%;
         `}
       >
-        <text css={typography.h2}> ~ Profile ~</text>
+        <ProfilePicture img={currentUser.user_metadata.picture} />
+        <text
+          css={css`
+            ${typography.h3}
+            padding: 10px;
+            width: 100%;
+            display: flex;
+            border-bottom: 0.1rem solid black;
+            justify-content: center;
+          `}
+        >
+          {" "}
+          {currentUser.user_metadata.name}
+        </text>
       </div>
     </div>
   );
