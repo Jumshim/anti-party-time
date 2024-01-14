@@ -8,6 +8,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
 import cslFuncs from "./cslFuncs";
 import { backIconSVG } from "../assets/js/icons";
+import { initLobby } from "../display";
 
 const MainDiv = css`
   display: flex;
@@ -61,6 +62,8 @@ const CreateLobby = () => {
       })
       .then((data) => {
         setLobbyHash(data.data.lobby_hash);
+        initLobby(data.data.lobby_hash);
+        setLobbyCreated(true);
       });
   };
 
@@ -74,7 +77,6 @@ const CreateLobby = () => {
   useEffect(() => {
     if (siteList?.length > 0) {
       getLobby();
-      setLobbyCreated(true);
     }
   }, [siteList]);
 

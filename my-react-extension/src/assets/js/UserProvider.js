@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
-import { getCurrentUser } from "../../components/Login";
+import { getCurrentLobby, getCurrentUser } from "../../components/Login";
 
 const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
-  const [lobby, setLobby] = useState(false);
+  const [lobby, setLobby] = useState("");
   const [isAuthCheckComplete, setIsAuthCheckComplete] = useState(false);
 
   useEffect(() => {
@@ -18,6 +18,9 @@ const UserProvider = ({ children }) => {
       }
       setIsAuthCheckComplete(true);
     });
+    // getCurrentLobby().then((resp) => {
+    //   setLobby(resp.lobbyHash);
+    // });
   }, []);
 
   return (
