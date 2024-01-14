@@ -35,6 +35,7 @@ def create_lobby():
       #pulling the user id
 
       user_email = data.get('user_email')
+      sites = data.get('sites')
       lobby_hash = generate_hash()
       #Creating the lobby
       response = supabase.table('lobbies').insert({"hash": lobby_hash}).execute()
@@ -43,7 +44,7 @@ def create_lobby():
       if user_email:
         user = get_user(user_email)
         if user:
-           data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
+           data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id'], "sites": sites}).execute()
       return jsonify({
           "status": "success",
           "data": {"lobby_hash": lobby_hash}
@@ -106,5 +107,68 @@ def track_lobby():
 
    return f'Successfully tracked visit to {website_url}'
 
+@main.route('/users', methods=['POST'])
+def create_user2():
+   try:
+        data = request.get_json()
+        user_email = data.get('user_email')
+        #user_id = data.get('id')
 
+        # Check if email and id are provided
+        if not user_email:
+            return jsonify({"status": "error", "message": "Email and ID are required"}), 400
+        # Check if the user already exists
+        existing_user = supabase.table('users').select('*').eq('user_email', user_email).execute().data
+        if existing_user:
+           return jsonify({"status": "error", "message": "User with the provided ID already exists"}), 409
+
+        response = supabase.table('users').insert({"user_email": user_email, "id": user_id}).execute()
+        user = response.data[0]
+
+        return jsonify({"status": "success", "data": {"user": user}}), 200
+   except Exception as e:
+      return jsonify({
+          "status": "error",
+          "message": str(e)
+       }), 500
+
+@main.route('/sites_list', methods=['POST'])
+def watch_times():
+   try:
+        data = request.get_json()
+        user_email = data.get('user_email')
+        user = get_user(user_email)
+        user_id = user['id']
+        lobby_hash = data.get('hash')
+        website = data.get('website')
+        time_spent = data.get('time_spent')
+
+        lobbyIdResponse = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute()
+        lobby_id = lobbyIdResponse.data[0]['id']
+
+        if not time_spent:
+            return jsonify({"status": "error", "message": "User ID, Lobby ID, Website, and Time Spent are required"}), 400
+        
+        existing_user = supabase.table('users').select('*').eq('email', user_email).execute().data
+        if not existing_user:
+            return jsonify({"status": "error", "message": "User with the provided ID does not exist"}), 404
+
+        # Update watch times 
+
+        checkResponse = supabase.table('sites_list').select('*').eq('user_id', user_id).eq('website', website).execute()
+
+        print("checkResponse: ", checkResponse.count)
+
+        if (checkResponse.count == 0): #insert
+           print("insert...")
+           response = supabase.table('sites_list').insert({"user_id": user_id, "lobby_id": lobby_id, "website": website, "time_spent": time_spent}).execute()
+        else: #update
+           print("updating...")
+           response = supabase.table('sites_list').update({"user_id": user_id, "lobby_id": lobby_id, "website": website, "time_spent": time_spent}).eq('user_id', user_id).eq('website', website).execute()
+
+        return jsonify({"status": "success", "message": f"Successfully updated watch times for user {user_id}"}), 200
+   except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+   
     
