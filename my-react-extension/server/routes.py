@@ -155,11 +155,16 @@ def watch_times():
 
         # Update watch times 
 
-        conflictFields = ['id', 'website']
+        checkResponse = supabase.table('sites_list').select('*').eq('user_id', user_id).eq('website', website).execute()
 
-        response = supabase.table('sites_list').upsert(
-            {"id": user_id, "lobby_id": lobby_id, "website": website, "time_spent": time_spent},
-            on_conflict=conflictFields).execute()
+        print("checkResponse: ", checkResponse.count)
+
+        if (checkResponse.count == 0): #insert
+           print("insert...")
+           response = supabase.table('sites_list').insert({"user_id": user_id, "lobby_id": lobby_id, "website": website, "time_spent": time_spent}).execute()
+        else: #update
+           print("updating...")
+           response = supabase.table('sites_list').update({"user_id": user_id, "lobby_id": lobby_id, "website": website, "time_spent": time_spent}).eq('user_id', user_id).eq('website', website).execute()
 
         return jsonify({"status": "success", "message": f"Successfully updated watch times for user {user_id}"}), 200
    except Exception as e:
