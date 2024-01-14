@@ -4,6 +4,7 @@ import UserProvider from "./assets/js/UserProvider";
 import Authenticate from "./components/Authenticate";
 import NoLobby from "./components/NoLobby";
 import CreateLobby from "./components/CreateLobby";
+import AddSites from "./components/AddSites";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Authenticate />} />
             <Route path="/no_lobby" element={<NoLobby />} />
+            <Route path="/add_sites" element={<AddSites />} />
             <Route path="/create_lobby" element={<CreateLobby />} />
           </Routes>
         </Router>

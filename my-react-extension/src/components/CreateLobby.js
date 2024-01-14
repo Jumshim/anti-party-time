@@ -35,17 +35,21 @@ const CreateLobby = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [lobbyHash, setLobbyHash] = useState("");
+  const [sites, setSites] = useState([]);
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
   const [siteList, setSiteList] = useState([]);
 
   const getLobby = async () => {
+    console.log(
+      `getting lobby with user_email: ${currentUser.email}, sites: ${sites}`
+    );
     const queryParams = {
       user_email: currentUser.email,
       sites: sites,
     };
 
-    const response = await fetch("http://127.0.0.1:5000/createlobby?", {
+    const response = fetch("http://127.0.0.1:5000/createlobby", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -57,7 +61,9 @@ const CreateLobby = () => {
         return response?.json();
       })
       .then((data) => {
+        console.log(`setting lobby hash`);
         setLobbyHash(data.data.lobby_hash);
+        console.log(`access token: ${accessToken}`);
       });
   };
 

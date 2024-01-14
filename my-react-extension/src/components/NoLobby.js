@@ -54,7 +54,7 @@ const NoLobby = () => {
   //   };
 
   const handleCreateClick = () => {
-    navigate("/create_lobby");
+    navigate("/add_sites");
   };
 
   const handleJoinClick = () => {
