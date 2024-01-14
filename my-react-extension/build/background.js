@@ -15,13 +15,49 @@ const getData = (key) => {
   });
 };
 
+const updateTime = async (site, time) => {
+
+  let lobbyKey = await getData("lobby")
+  console.log("lobbyKey: ", lobbyKey["id"])
+
+  let email = await getData("user")
+  console.log("email: ", email)
+
+  const queryParams = {
+    "user_email": email,
+    "hash": lobbyKey["id"],
+    "website": site,
+    "time_spent": time
+  };
+
+  console.log("params: ", JSON.stringify(queryParams))
+
+  const response = fetch("http://127.0.0.1:5000/sites_list?", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(queryParams),
+  })
+    .then((response) => {
+      console.log(`response fetched: ${JSON.stringify(response)}`);
+      return response?.json();
+    })
+    .then((data) => {
+      console.log("data:", data);
+    });
+};
+
 const update = async (host, seconds) => {
-  // console.log(host, "updating...");
+  console.log(host, "updating...");
   let data = await getData("sites");
   if (!data[host]) {
     data[host] = 0;
   }
   data[host] += seconds;
+
+  updateTime(host, data[host])
+
   save("sites", data);
 };
 
@@ -122,7 +158,7 @@ const end = async () => {
     const moment = Date.now();
     const seconds = parseInt((moment - start) / 1000, 10);
     cacheStorage = {};
-    // console.log("adding...", seconds, "to ", active.name);
+    console.log("adding...", seconds, "to ", active.name);
     update(active.name, seconds);
     return cacheStorage;
   }
@@ -226,8 +262,6 @@ chrome.windows.onFocusChanged.addListener(async (window) => {
 const initialize = async () => {
   save("sites", {});
 };
-
-initialize();
 
 setInterval(() => {
   console.log(getData("sites"));

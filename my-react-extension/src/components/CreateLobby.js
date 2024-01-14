@@ -60,7 +60,7 @@ const CreateLobby = () => {
       body: JSON.stringify(queryParams),
     })
       .then((response) => {
-        //console.log(`response fetched: ${JSON.stringify(response)}`);
+        console.log(`response fetched: ${JSON.stringify(response)}`);
         return response?.json();
       })
       .then((data) => {

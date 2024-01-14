@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
+import { getData } from "./Authenticate";
 
 const MainDiv = css`
   display: flex;
@@ -16,13 +17,41 @@ const MainDiv = css`
   height: 400px;
 `;
 
+let lobbyKey = await getData("lobby")
+console.log("lobbyKey: ", lobbyKey["id"])
+
 export const Ranking = () => {
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
 
   const navigate = useNavigate();
 
-  useEffect(() => {});
+  const getRanking = async () => {
+    const queryParams = new URLSearchParams({
+      "hash": lobbyKey["id"]
+    });
+
+    console.log(JSON.stringify(queryParams))
+
+    const response = fetch("http://127.0.0.1:5000/tracklobby?" + queryParams, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        console.log(`response fetched: ${JSON.stringify(response)}`);
+        return response?.json();
+      })
+      .then((data) => {
+        console.log("Data:", data)
+      });
+  };
+
+  useEffect(() => {
+    getRanking();
+  });
 
   return (
     <div css={MainDiv}>
