@@ -100,7 +100,6 @@ def track_lobby():
         lobby_id = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute().data[0]["id"]
         response = supabase.table('lobby_users').select('user_id').eq('lobby_id', lobby_id).execute().data
         users = [item['user_id'] for item in response]
-        ranking = {}
 
         #[1,2,3]
 
@@ -117,31 +116,15 @@ def track_lobby():
             sitesData = {}
             sitesResponse = supabase.table('sites_list').select('website', 'time_spent').eq('user_id',user).execute().data
             print("siteResponse: ", sitesResponse)
-
-            totalTime = 0
             for site in sitesResponse:
                 sitesData[site['website']] = site['time_spent']
-                totalTime += site['time_spent']
-            
-            ranking[user] = totalTime
 
             userData[user]["sites"] = sitesData
 
             finalResponse.append(userData)
-
-        print("ranking: ", ranking)
-        
-        sorted_ranking = dict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
-        
-        listRank = []
-
-        for index, (key,value) in enumerate(sorted_ranking.items()):
-           listRank.append((key, value, index+1))
-
         return jsonify({
           "status": "success",
-          "data": {"users": finalResponse,
-                   "ranking": listRank}
+          "data": finalResponse
         }), 200
     except Exception as e:
         return jsonify({
@@ -263,17 +246,4 @@ def watch_times():
    except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-<<<<<<< HEAD
-   
-=======
-=======
-
-
-
-   return f'Successfully tracked visit to {website_url}'
-
-
-
->>>>>>> api's work
->>>>>>> api's work
     
