@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
-import { getCurrentLobby, getCurrentUser } from "../../components/Login";
+import {
+  getCurrentLobby,
+  getCurrentUser,
+  supabase,
+} from "../../components/Login";
 
 const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -23,6 +27,14 @@ const UserProvider = ({ children }) => {
     // });
   }, []);
 
+  const signOut = async () => {
+    setCurrentUser(null);
+    setAccessToken(null);
+
+    await supabase.auth.signOut();
+    chrome.storage.sync.remove(["gauthAccessToken", "gauthRefreshToken"]);
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -33,6 +45,7 @@ const UserProvider = ({ children }) => {
         isAuthCheckComplete,
         lobby,
         setLobby,
+        signOut,
       }}
     >
       {children}

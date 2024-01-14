@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
+import { removeLobby } from "./Authenticate";
 
 const MainDiv = css`
   display: flex;
@@ -41,7 +42,7 @@ const ProfilePicture = ({ img }) => {
 };
 
 export const Profile = () => {
-  const { currentUser, accessToken, isAuthCheckComplete } =
+  const { currentUser, accessToken, isAuthCheckComplete, signOut } =
     useContext(UserContext);
 
   const navigate = useNavigate();
@@ -50,6 +51,17 @@ export const Profile = () => {
   useEffect(() => {
     const fetchScreenTime = async () => {};
   });
+
+  const onSignOut = () => {
+    removeLobby();
+    signOut();
+    navigate("/");
+  };
+
+  const onRemoveLobby = () => {
+    removeLobby();
+    navigate("/no_lobby");
+  };
 
   return (
     <div css={MainDiv}>
@@ -81,6 +93,8 @@ export const Profile = () => {
       </div>
 
       <Link to="/ranking">Ranking</Link>
+      <button onClick={onSignOut}>Sign Out</button>
+      <button onClick={onRemoveLobby}>Remove Lobby</button>
     </div>
   );
 };

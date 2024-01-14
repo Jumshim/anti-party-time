@@ -28,6 +28,15 @@ export const getData = (key) => {
   });
 };
 
+export const removeLobby = async () => {
+  await new Promise((resolve) => {
+    STORAGE.remove("lobby", () => {
+      console.log("Lobby removed successfully");
+      resolve();
+    });
+  });
+};
+
 export default function Authenticate() {
   const { currentUser, accessToken, isAuthCheckComplete, lobby } =
     useContext(UserContext);
