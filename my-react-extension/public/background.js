@@ -224,17 +224,13 @@ chrome.windows.onFocusChanged.addListener(async (window) => {
 });
 
 const initialize = async () => {
-  save("sites", {
-    facebook: 0,
-    youtube: 0,
-    instagram: 0,
-  });
+  save("sites", {});
 };
 
 initialize();
 
 setInterval(() => {
-  // console.log(getData("sites"));
+  console.log(getData("sites"));
   // console.log(getData("cache"));
 }, 20000);
 
