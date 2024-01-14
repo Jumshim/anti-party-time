@@ -31,7 +31,7 @@ export const buttonStyles = {
     ${typography.p}
     padding: 8px 16px;
     border-radius: 16px;
-    border: 1rem solid #0f172a;
+    border: 0.2rem solid #0f172a;
     background-color: #f1f5f9;
     color: #0f172a;
     &:hover {

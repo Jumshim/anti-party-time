@@ -32,23 +32,23 @@ const SingleCharacter = ({ char }) => {
   );
 };
 
-const CreateLobby = () => {
+const JoinLobby = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [lobbyCreated, setLobbyCreated] = useState(false);
-  const [lobbyHash, setLobbyHash] = useState("");
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
-  const [siteList, setSiteList] = useState([]);
-  const [returnedSiteList, setReturnedSiteList] = useState([]);
+  const [inputValue, setInputValue] = useState("");
 
-  const getLobby = async () => {
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const joinLobby = async () => {
     const queryParams = {
+      hash: inputValue,
       user_email: currentUser.email,
-      sites: siteList,
     };
 
-    const response = fetch("http://127.0.0.1:5000/createlobby", {
+    const response = await fetch("http://127.0.0.1:5000/joinlobby", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -60,26 +60,24 @@ const CreateLobby = () => {
         return response?.json();
       })
       .then((data) => {
-        setLobbyHash(data.data.lobby_hash);
+        // setLobbyHash(data.data.lobby_hash);
+        navigate("/profile");
       });
   };
 
-  useEffect(() => {
-    const newSiteList = location.state?.sites;
-    if (newSiteList && newSiteList.length > 0) {
-      setSiteList(newSiteList);
-    }
-  }, [location.state?.sites]);
-
-  useEffect(() => {
-    if (siteList?.length > 0) {
-      getLobby();
-      setLobbyCreated(true);
-    }
-  }, [siteList]);
-
   return (
     <div css={MainDiv}>
+      <Link
+        css={css`
+          display: flex;
+          justify-content: flex-start;
+          width: 100%;
+          align-items: flex-start;
+        `}
+        to="/no_lobby"
+      >
+        {backIconSVG}
+      </Link>
       <div
         css={css`
           margin: 20px 10px;
@@ -88,7 +86,7 @@ const CreateLobby = () => {
           align-content: center;
         `}
       >
-        <text css={typography.h2}> ~ Lobby Created ~</text>
+        <text css={typography.h2}> ~ Join Lobby ~</text>
       </div>
       <div
         css={css`
@@ -99,46 +97,45 @@ const CreateLobby = () => {
         `}
       >
         <text css={typography.muted}>
-          Share this lobby code with the other anti-partiers you want in your
-          clique.
+          Input a lobby code to join the other anti-partiers. They await you...
         </text>
       </div>
-      <div
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        placeholder="Enter 6-Character Code"
         css={css`
-          display: flex;
-          flex-direction: column;
+          ${typography.small}
+          flex;
+          height: 2.25rem;
+          width: 70%;
+          border-radius: 0.375rem;
+          border: 1px solid #0f172a;
+          padding: 0.25rem 0.75rem;
+          background-color: transparent;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          margin: 20px;
+        `}
+      />
+      <text
+        css={css`
+          ${typography.muted}
+          padding: 10px;
         `}
       >
-        <div
-          css={css`
-            margin: 5px;
-            flex-direction: row;
-            justify-content: space-evenly;
-            align-items: center;
-            align-content: center;
-          `}
-        >
-          {lobbyHash.split("").map((char, index) => (
-            <SingleCharacter key={index} char={char} />
-          ))}
-        </div>
-        {lobbyCreated ? (
-          <Link
-            css={css`
-              ${buttonStyles.outline}
-              text-align: center;
-              margin: 20px;
-            `}
-            to="/profile"
-          >
-            Go to Profile
-          </Link>
-        ) : (
-          <div />
-        )}
-      </div>
+        Please submit your given code!
+      </text>
+      <button
+        css={css`
+          ${buttonStyles.default} margin: 20px;
+        `}
+        onClick={joinLobby}
+      >
+        Submit
+      </button>
     </div>
   );
 };
 
-export default CreateLobby;
+export default JoinLobby;

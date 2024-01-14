@@ -4,8 +4,9 @@ import React, { useContext, useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
+import { backIconSVG } from "../assets/js/icons";
 
 const MainDiv = css`
   display: flex;
@@ -39,6 +40,17 @@ const AddSites = () => {
 
   return (
     <div css={MainDiv}>
+      <Link
+        css={css`
+          display: flex;
+          justify-content: flex-start;
+          width: 100%;
+          align-items: flex-start;
+        `}
+        to="/no_lobby"
+      >
+        {backIconSVG}
+      </Link>
       <text
         css={css`
           ${typography.h4}
