@@ -39,6 +39,10 @@ export const typography = {
     font-family: ${fonts.mono};
     font-size: 0.875rem;
   `,
+  xsmall: css`
+    font-family: ${fonts.mono};
+    font-size: 0.75;
+  `,
   muted: css`
     font-family: ${fonts.mono};
     font-size: 0.7rem;

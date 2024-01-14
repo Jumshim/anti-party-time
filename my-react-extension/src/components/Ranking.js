@@ -33,11 +33,16 @@ const RankingItem = ({ email, time }) => {
         align-items: center;
         justify-content: center;
         width: 100%;
+        margin: 10px;
+        filter: drop-shadow(0 0 0.3rem #e2e8f0);
+        border-radius: 15px;
+        padding: 3px;
+        background-color: white;
       `}
     >
       <p
         css={css`
-          ${typography.small}
+          ${typography.xsmall}
           flex: 0.7;
           justify-content: flex-start;
           padding: 3px;
