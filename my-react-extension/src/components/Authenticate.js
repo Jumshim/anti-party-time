@@ -32,6 +32,8 @@ export const removeLobby = async () => {
   await new Promise((resolve) => {
     STORAGE.remove("lobby", () => {
       console.log("Lobby removed successfully");
+    });
+    STORAGE.remove("sites", () => {
       resolve();
     });
   });
