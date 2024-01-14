@@ -224,8 +224,7 @@ chrome.windows.onFocusChanged.addListener(async (window) => {
 });
 
 const initialize = async () => {
-  save("sites", {
-  });
+  save("sites", {});
 };
 
 initialize();
