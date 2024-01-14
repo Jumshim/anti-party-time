@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import SiteListForm from "./SiteListForm";
-import JoinLobby from "./joinLobby";
 import cslFuncs from "./cslFuncs";
 import "./buttons.css";
 import { css } from "@emotion/react";

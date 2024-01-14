@@ -2,7 +2,6 @@
 
 import React, { useContext, useState, useEffect } from "react";
 import SiteListForm from "./SiteListForm";
-import JoinLobby from "./JoinLobby";
 import "./buttons.css";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
@@ -40,16 +39,18 @@ const CreateLobby = () => {
     useContext(UserContext);
 
   const getLobby = async () => {
-    const queryParams = new URLSearchParams({
+    const queryParams = {
       user_email: currentUser.email,
-    });
+      sites: ["instagram", "youtube"]
+    };
 
-    const response = await fetch("http://127.0.0.1:5000/lobby?" + queryParams, {
-      method: "GET",
+    const response = await fetch("http://127.0.0.1:5000/createlobby?", {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
+      body: queryParams,
     })
       .then((response) => {
         return response?.json();
