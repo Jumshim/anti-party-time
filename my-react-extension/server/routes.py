@@ -8,11 +8,12 @@ main = Blueprint('main', __name__)
 @main.route('/user', methods=['POST'])
 def create_user():
    data = request.get_json()
-   data = supabase.table('users').insert({"email": data.get('email')}).execute()
+   data = supabase.table('users').insert({"email": data.get('email'), "name": data.get('name')}).execute()
    return jsonify({"message": f"User added successfully"}), 201
 
 def get_user(user_email):
    response = supabase.table('users').select('*').eq('email', user_email).execute()
+   print("getuser response: ", response.data[0])
    return response.data[0]
 
 @main.route('/', methods=['GET'])
@@ -35,9 +36,10 @@ def create_lobby():
       #pulling the user id
 
       user_email = data.get('user_email')
+      sites = data.get('sites')
       lobby_hash = generate_hash()
       #Creating the lobby
-      response = supabase.table('lobbies').insert({"hash": lobby_hash}).execute()
+      response = supabase.table('lobbies').insert({"hash": lobby_hash, "sites": sites}).execute()
       lobby = response.data[0]
 
       if user_email:
@@ -76,7 +78,7 @@ def get_sites():
     try:
         data = request.get_json()
         lobby_hash = data.get('hash')
-        response = supabase.table('lobbies').select('sites').eq('hash',hash).execute()
+        response = supabase.table('lobbies').select('sites').eq('hash',lobby_hash).execute()
         siteList = response.data[0]["sites"]
 
         return jsonify({
@@ -95,7 +97,7 @@ def track_lobby():
     try:
         data = request.get_json()
         lobby_hash = data.get('hash')
-        lobby_id = supabase.table('lobbies').select('id').eq('hash', hash).execute().data[0]["id"]
+        lobby_id = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute().data[0]["id"]
         response = supabase.table('lobby_users').select('user_id').eq('lobby_id', lobby_id).execute().data
         users = [item['user_id'] for item in response]
 
@@ -104,6 +106,7 @@ def track_lobby():
         finalResponse = []
 
         for user in users:
+            print("user id: ", user)
             userData = {}
             userData[user] = {}
             userInfo = supabase.table('users').select('name', 'email').eq('id', user).execute().data
@@ -111,7 +114,8 @@ def track_lobby():
             userData[user]["email"] = userInfo[0]["email"]
 
             sitesData = {}
-            sitesResponse = supabase.table('sites_list').select('website', 'time_spent').eq('user_id', user).execute().data
+            sitesResponse = supabase.table('sites_list').select('website', 'time_spent').eq('user_id',user).execute().data
+            print("siteResponse: ", sitesResponse)
             for site in sitesResponse:
                 sitesData[site['website']] = site['time_spent']
 
@@ -164,7 +168,11 @@ def join_lobby():
        }), 500
     
 @main.route('/site', methods=['POST'])
+<<<<<<< HEAD
 def track_lobbi():
+=======
+def get_lobby():
+>>>>>>> api's work
    data = request.get_json()
    #user_id = data.get('user_id')
    #time_spent = data.get('time_spent')
@@ -177,10 +185,20 @@ def track_lobbi():
 
    data = {'website': website_url}
    supabase.table('sites_list').insert(data)
+<<<<<<< HEAD
 
 
 
    return f'Successfully tracked visit to {website_url}'
 
 
+=======
+
+
+
+   return f'Successfully tracked visit to {website_url}'
+
+
+
+>>>>>>> api's work
     
