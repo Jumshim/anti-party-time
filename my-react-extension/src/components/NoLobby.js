@@ -1,99 +1,96 @@
-import React, { useState } from 'react';
-import SiteListForm from './SiteListForm';
-import JoinLobby from './joinLobby';
-import cslFuncs from './cslFuncs';
+import React, { useState } from "react";
+import SiteListForm from "./SiteListForm";
+import JoinLobby from "./joinLobby";
+import cslFuncs from "./cslFuncs";
 import "./buttons.css";
+import { css } from "@emotion/react";
+import { typography } from "../assets/js/typography";
+import { buttonStyles } from "../assets/js/button";
+import { useNavigate } from "react-router-dom";
+
+const MainDiv = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  align-content: center;
+  margin: 20px;
+  height: 400px;
+`;
 
 const NoLobby = () => {
-    const [showForm, setShowForm] = useState(false);
-    const [showJoin, setShowJoin] = useState(false);
-    const [lobbyKey, setLobbyKey] = useState('');
-    const [submittedData, setSubmittedData] = useState(null);
-    const [keyData, setKeyData] = useState('');
+  const navigate = useNavigate();
 
-    const initWebsites = (lobbyKey) => {
+  const initWebsites = (lobbyKey) => {
+    const websites = ["youtube", "facebook", "instagram"]; //note*** replace with post call to get websites with lobbyKey
+    const webDict = {};
 
-        const websites = ['youtube','facebook','instagram'] //note*** replace with post call to get websites with lobbyKey 
-        const webDict = {};
+    websites.forEach((website) => {
+      webDict[website] = 0;
+    });
 
-        websites.forEach(website => {
-            webDict[website] = 0;
-        });
-        
-        cslFuncs.initialize('sites', webDict);
+    cslFuncs.initialize("sites", webDict);
+  };
 
-    };
+  const handleCreateClick = () => {
+    navigate("/create_lobby");
+  };
 
-    const handleFormSubmit = (websiteList) => {
-        // Process the website list and obtain the lobby key (replace with your logic)
-        console.log(websiteList);
-        const generatedLobbyKey = 'your_generated_lobby_key';
-        setLobbyKey(generatedLobbyKey);
-        setSubmittedData(websiteList);
-    };
+  const handleJoinClick = () => {
+    navigate("/join_lobby");
+  };
 
-    const handleJoinSubmit = (keyData) => {
-        setKeyData(keyData);
-    };
-    
-    const handleCreateClick = () => {
-        setShowForm(true);
-    };
-
-    const handleJoinClick = () => {
-        setShowJoin(true);
-    }
-
-    const handleBack = () => {
-        setShowForm(false);
-        setShowJoin(false);
-    };
-
-
-    return (
-        <div>
-
-            <button 
-            className={`lobbyButton back ${(showForm || showJoin) ? 'slide-in' : 'slide-out'}`}
-            onClick={handleBack}
-            >
-
-                Back
-
-            </button>
-
-            <button 
-            className={`lobbyButton ${(showForm || showJoin) ? 'slide-out' : 'slide-in'}`}
-            onClick={handleCreateClick}
-            >
-                Create Lobby
-            </button>
-
-
-            <button 
-            className={`lobbyButton ${(showForm || showJoin) ? 'slide-out' : 'slide-in'}`}
-            onClick={handleJoinClick}
-            >
-                Join Lobby
-            </button>
-
-            {showForm && (<SiteListForm onSubmit={handleFormSubmit}/>)}
-
-            {showJoin && (<JoinLobby onSubmit={handleJoinSubmit}/>)}
-            
-            {submittedData && (
-                <p>Submitted Data: {submittedData}</p>
-            )}
-
-            {keyData && (
-                <p>Key Data: {keyData}</p>
-            )}
-
-
-
-        </div>
-    );
-
+  return (
+    <div css={MainDiv}>
+      <div
+        css={css`
+          margin: 20px 10px;
+          justify-content: center;
+          align-items: center;
+          align-content: center;
+        `}
+      >
+        <text css={typography.h2}> Where's your Anti-Party? 🧐</text>
+      </div>
+      <div
+        css={css`
+          margin: 15px 10px;
+          justify-content: center;
+          align-items: center;
+          align-content: center;
+        `}
+      >
+        <text css={typography.muted}>
+          Create or join a lobby to create an anti-party
+        </text>
+      </div>
+      <div
+        css={css`
+          margin: 5px;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+        `}
+      >
+        <button
+          css={css`
+            ${buttonStyles.default} margin: 10px;
+          `}
+          onClick={handleCreateClick}
+        >
+          Create Lobby
+        </button>
+        <button
+          css={css`
+            ${buttonStyles.default} margin: 10px;
+          `}
+          onClick={handleJoinClick}
+        >
+          Join Lobby
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default NoLobby;

@@ -31,7 +31,7 @@ def generate_hash():
 @main.route('/lobby', methods=['GET'])
 def create_lobby():
     try:
-      data = request.get_json()
+      data = request.args
 
       #pulling the user id
 

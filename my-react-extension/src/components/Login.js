@@ -1,4 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { createClient } from "@supabase/supabase-js";
+import { buttonStyles } from "../assets/js/button";
+import { css } from "@emotion/react";
 
 export const supabase = createClient(
   "https://yawtngjngrqazogxnvqm.supabase.co",
@@ -52,7 +55,9 @@ export default function Login() {
 
   return (
     <div>
-      <button onClick={signInWithGoogle}>Login</button>
+      <button css={buttonStyles.default} onClick={signInWithGoogle}>
+        Login
+      </button>
     </div>
   );
 }
