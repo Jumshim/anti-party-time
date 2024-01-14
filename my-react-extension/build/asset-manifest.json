@@ -2,11 +2,15 @@
   "files": {
 <<<<<<< HEAD
     "main.css": "/static/css/main.daf81ba8.css",
+<<<<<<< HEAD
     "main.js": "/static/js/main.86f04d84.js",
 =======
     "main.css": "/static/css/main.98fba249.css",
     "main.js": "/static/js/main.a75a67b6.js",
 >>>>>>> finished init websites
+=======
+    "main.js": "/static/js/main.bb352083.js",
+>>>>>>> ccd090a0 (finished join lobby and nav)
     "static/js/720.f94ca596.chunk.js": "/static/js/720.f94ca596.chunk.js",
     "static/js/27.5b4f0d41.chunk.js": "/static/js/27.5b4f0d41.chunk.js",
     "index.html": "/index.html"
@@ -14,10 +18,14 @@
   "entrypoints": [
 <<<<<<< HEAD
     "static/css/main.daf81ba8.css",
+<<<<<<< HEAD
     "static/js/main.86f04d84.js"
 =======
     "static/css/main.98fba249.css",
     "static/js/main.a75a67b6.js"
 >>>>>>> finished init websites
+=======
+    "static/js/main.bb352083.js"
+>>>>>>> ccd090a0 (finished join lobby and nav)
   ]
 }

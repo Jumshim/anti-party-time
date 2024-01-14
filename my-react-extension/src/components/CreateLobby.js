@@ -4,9 +4,10 @@ import React, { useContext, useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
 import cslFuncs from "./cslFuncs";
+import { backIconSVG } from "../assets/js/icons";
 
 const MainDiv = css`
   display: flex;
@@ -34,15 +35,13 @@ const SingleCharacter = ({ char }) => {
 const CreateLobby = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [lobbyCreated, setLobbyCreated] = useState(false);
   const [lobbyHash, setLobbyHash] = useState("");
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
   const [siteList, setSiteList] = useState([]);
 
   const getLobby = async () => {
-    console.log(
-      `getting lobby with user_email: ${currentUser.email}, sites: ${siteList}`
-    );
     const queryParams = {
       user_email: currentUser.email,
       sites: siteList,
@@ -55,46 +54,59 @@ const CreateLobby = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(queryParams),
-    }).then((response) => {
-      return response?.json();
     })
-    .then((data) => {
-      setLobbyHash(data.data.lobby_hash);
-    });
-};
+      .then((response) => {
+        return response?.json();
+      })
+      .then((data) => {
+        setLobbyHash(data.data.lobby_hash);
+      });
+  };
 
-useEffect(() => {
-  const newSiteList = location.state?.sites;
-  if (newSiteList && newSiteList.length > 0) {
-    setSiteList(newSiteList);
-  }
-}, [location.state?.sites]);
+  useEffect(() => {
+    const newSiteList = location.state?.sites;
+    if (newSiteList && newSiteList.length > 0) {
+      setSiteList(newSiteList);
+    }
+  }, [location.state?.sites]);
 
-useEffect(() => {
-  if (siteList.length > 0) {
-    getLobby();
-  }
-}, [siteList]);
+  useEffect(() => {
+    if (siteList.length > 0) {
+      getLobby()
+        .then((lobbyResponse) => {
+          return lobbyResponse?.data?.lobby_hash;
+        })
+        .then((lobbyHash) => {
+          getSites(lobbyHash);
+        })
+        .then((sitesResponse) => {
+          InitWebsites(sitesResponse?.data);
+        });
+    }
+  }, [siteList]);
 
   const getSites = async (lobbyKey) => {
     const queryParams = new URLSearchParams({
-        hash: lobbyKey //place holder for lobby hash
+      hash: lobbyKey, //place holder for lobby hash
     });
 
-    const response = await fetch("http://127.0.0.1:5000/getsites?" + queryParams, {
+    const response = await fetch(
+      "http://127.0.0.1:5000/getsites?" + queryParams,
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-      })
-      if (!response.ok) {
-        throw new Error(`Failed to fetch lobby. Status: ${response.status}`);
       }
-      
-      const data = await response.json();
-      setSiteList(data?.data?.siteList);
-      return data;
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch lobby. Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setSiteList(data?.data?.siteList);
+    return data;
   };
 
   const InitWebsites = (siteList) => {
@@ -102,7 +114,7 @@ useEffect(() => {
     //note*** replace with post call to get websites with lobbyKey
     const webDict = {};
 
-    console.log("CREATELOBBY: ", websites)
+    console.log("CREATELOBBY: ", websites);
 
     websites.forEach((website) => {
       webDict[website] = 0;
@@ -112,31 +124,6 @@ useEffect(() => {
 
     cslFuncs.initialize("sites", webDict);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const lobbyResponse = await getLobby();
-        console.log('Lobby Response:', lobbyResponse);
-  
-        if (lobbyResponse) {
-          const lobbyHash = lobbyResponse?.data?.lobby_hash;
-          
-          if (lobbyHash) {
-            const sitesResponse = await getSites(lobbyHash);
-            console.log('Sites Response:', sitesResponse);
-  
-            InitWebsites(sitesResponse.data);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-  
-    fetchData();
-  }, []);
-  
 
   return (
     <div css={MainDiv}>
@@ -165,15 +152,37 @@ useEffect(() => {
       </div>
       <div
         css={css`
-          margin: 5px;
-          flex-direction: row;
-          justify-content: center;
-          align-items: center;
+          display: flex;
+          flex-direction: column;
         `}
       >
-        {lobbyHash.split("").map((char, index) => (
-          <SingleCharacter key={index} char={char} />
-        ))}
+        <div
+          css={css`
+            margin: 5px;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            align-content: center;
+          `}
+        >
+          {lobbyHash.split("").map((char, index) => (
+            <SingleCharacter key={index} char={char} />
+          ))}
+        </div>
+        {lobbyCreated ? (
+          <Link
+            css={css`
+              ${buttonStyles.outline}
+              text-align: center;
+              margin: 20px;
+            `}
+            to="/profile"
+          >
+            Go to Profile
+          </Link>
+        ) : (
+          <div />
+        )}
       </div>
     </div>
   );

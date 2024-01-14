@@ -1,8 +1,8 @@
 export const backIconSVG = (
   <svg
-    width="15"
-    height="15"
-    viewBox="0 0 15 15"
+    width="30"
+    height="30"
+    viewBox="0 0 30 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -17,9 +17,9 @@ export const backIconSVG = (
 
 export const forwardIconSVG = (
   <svg
-    width="15"
-    height="15"
-    viewBox="0 0 15 15"
+    width="30"
+    height="30"
+    viewBox="0 0 30 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -34,9 +34,9 @@ export const forwardIconSVG = (
 
 export const copyIconSVG = (
   <svg
-    width="15"
-    height="15"
-    viewBox="0 0 15 15"
+    width="30"
+    height="30"
+    viewBox="0 0 30 30"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >

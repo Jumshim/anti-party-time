@@ -4,8 +4,9 @@ import React, { useContext, useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
+import cslFuncs from "./cslFuncs";
 import { backIconSVG } from "../assets/js/icons";
 
 const MainDiv = css`
@@ -18,24 +19,50 @@ const MainDiv = css`
   height: 400px;
 `;
 
-const AddSites = () => {
+const SingleCharacter = ({ char }) => {
+  return (
+    <span
+      css={css`
+        ${typography.h2}
+        margin: 5px;
+      `}
+    >
+      {char}
+    </span>
+  );
+};
+
+const JoinLobby = () => {
   const navigate = useNavigate();
-  const [sites, setSites] = useState([]);
+  const { currentUser, accessToken, isAuthCheckComplete } =
+    useContext(UserContext);
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  const handleInputEnter = (e) => {
-    if (e.key === "Enter") {
-      setSites([inputValue, ...sites]);
-      setInputValue("");
-    }
-  };
+  const joinLobby = async () => {
+    const queryParams = {
+      hash: inputValue,
+      user_email: currentUser.email,
+    };
 
-  const onClick = () => {
-    navigate("/create_lobby", { state: { sites: sites } });
+    const response = await fetch("http://127.0.0.1:5000/joinlobby", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(queryParams),
+    })
+      .then((response) => {
+        return response?.json();
+      })
+      .then((data) => {
+        // setLobbyHash(data.data.lobby_hash);
+        navigate("/profile");
+      });
   };
 
   return (
@@ -51,46 +78,33 @@ const AddSites = () => {
       >
         {backIconSVG}
       </Link>
-      <text
-        css={css`
-          ${typography.h4}
-          padding: 5px;
-        `}
-      >
-        Add your sites!
-      </text>
-      <hr />
       <div
         css={css`
-          height: 200px;
-          max-height: 200px;
-          width: 100%;
-          overflow-y: scroll;
+          margin: 20px 10px;
+          justify-content: center;
+          align-items: center;
+          align-content: center;
         `}
       >
-        {sites.map((site, index) => (
-          <text
-            css={css`
-              ${typography.p}
-              display: flex;
-              flex-direction: column;
-              border-bottom: 1px solid black;
-              margin: 2px 5px 2px 5px;
-              width: 100%;
-              padding: 5px;
-            `}
-            key={index}
-          >
-            {site}
-          </text>
-        ))}
+        <text css={typography.h2}> ~ Join Lobby ~</text>
+      </div>
+      <div
+        css={css`
+          margin: 15px 10px;
+          justify-content: center;
+          align-items: center;
+          align-content: center;
+        `}
+      >
+        <text css={typography.muted}>
+          Input a lobby code to join the other anti-partiers. They await you...
+        </text>
       </div>
       <input
         type="text"
         value={inputValue}
         onChange={handleInputChange}
-        onKeyDown={handleInputEnter}
-        placeholder="Enter website hostname"
+        placeholder="Enter 6-Character Code"
         css={css`
           ${typography.small}
           flex;
@@ -110,13 +124,13 @@ const AddSites = () => {
           padding: 10px;
         `}
       >
-        Press 'Enter' to add a site. Press 'Submit' when you're done.
+        Please submit your given code!
       </text>
       <button
         css={css`
           ${buttonStyles.default} margin: 20px;
         `}
-        onClick={onClick}
+        onClick={joinLobby}
       >
         Submit
       </button>
@@ -124,4 +138,4 @@ const AddSites = () => {
   );
 };
 
-export default AddSites;
+export default JoinLobby;
