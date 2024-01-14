@@ -24,3 +24,6 @@ yarn-error.log*
 
 # private
 .env
+/server/__pycache__
+/node_modules
+/dist

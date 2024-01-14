@@ -4,4 +4,5 @@ class Config:
 <<<<<<< HEAD
     
 =======
->>>>>>> fcdde54c (changes)
+    
+>>>>>>> 9d8cc312 (finished with create lobby)

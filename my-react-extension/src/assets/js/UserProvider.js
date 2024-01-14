@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
-import { getCurrentUser } from "../../Login";
+import { getCurrentUser } from "../../components/Login";
 
 const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const [lobby, setLobby] = useState(false);
+  const [isAuthCheckComplete, setIsAuthCheckComplete] = useState(false);
 
   useEffect(() => {
     getCurrentUser().then((resp) => {
@@ -14,12 +16,21 @@ const UserProvider = ({ children }) => {
       } else {
         console.log("user is not found");
       }
+      setIsAuthCheckComplete(true);
     });
   }, []);
 
   return (
     <UserContext.Provider
-      value={{ currentUser, setCurrentUser, accessToken, setAccessToken }}
+      value={{
+        currentUser,
+        setCurrentUser,
+        accessToken,
+        setAccessToken,
+        isAuthCheckComplete,
+        lobby,
+        setLobby,
+      }}
     >
       {children}
     </UserContext.Provider>
