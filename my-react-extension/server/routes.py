@@ -86,23 +86,25 @@ def join_lobby():
           "status": "error",
           "message": str(e)
        }), 500
-<<<<<<< HEAD
-=======
     
-@main.route('/lobby', methods=['POST'])
+@main.route('/site', methods=['POST'])
 def track_lobby():
    data = request.get_json()
-   user_id = data.get('user_id')
-   time_spent = data.get('time_spent')
+   #user_id = data.get('user_id')
+   #time_spent = data.get('time_spent')
 
-   website_url = request.args.get('url')
-   visit_time = datetime.datetime.now().isoformat()
+   print(data)
 
-   data = {'website_url': website_url, 'visit_time': visit_time}
-   supabase.table(table_name).insert(data)
+   website_url = data.get('website')
+   #t_spent = data.get('') Do this later once the data is pulled out of the google dev space
+   # visit_time = datetime.datetime.now().isoformat()
 
-   return f'Successfully tracked visit to {website_url} at {visit_time}'
+   data = {'website': website_url}
+   supabase.table('sites_list').insert(data)
+
+
+
+   return f'Successfully tracked visit to {website_url}'
 
 
     
->>>>>>> 9e1540a5 (initializing sites_list)
