@@ -16,7 +16,7 @@ export default{
         });
     },
     async initialize(key, dictValue){
-        save(key, dictValue);
+        this.save(key, dictValue);
     
     }
 };

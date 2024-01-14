@@ -28,7 +28,7 @@ def generate_hash():
     else: return Exception
 
 
-@main.route('/lobby', methods=['GET'])
+@main.route('/createlobby', methods=['POST'])
 def create_lobby():
     try:
       data = request.args
@@ -150,7 +150,7 @@ def track_lobby():
         }), 500
     
 
-@main.route('/lobby', methods=['POST'])
+@main.route('/joinlobby', methods=['POST'])
 def join_lobby():
     try:
       data = request.get_json()
