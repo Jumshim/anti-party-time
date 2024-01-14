@@ -107,6 +107,30 @@ def track_lobby():
 
    return f'Successfully tracked visit to {website_url}'
 
+@main.route('/users', methods=['POST'])
+def create_user2():
+   try:
+        data = request.get_json()
+        user_email = data.get('user_email')
+        #user_id = data.get('id')
+
+        # Check if email and id are provided
+        if not user_email:
+            return jsonify({"status": "error", "message": "Email and ID are required"}), 400
+        # Check if the user already exists
+        existing_user = supabase.table('users').select('*').eq('user_email', user_email).execute().data
+        if existing_user:
+           return jsonify({"status": "error", "message": "User with the provided ID already exists"}), 409
+
+        response = supabase.table('users').insert({"user_email": user_email, "id": user_id}).execute()
+        user = response.data[0]
+
+        return jsonify({"status": "success", "data": {"user": user}}), 200
+   except Exception as e:
+      return jsonify({
+          "status": "error",
+          "message": str(e)
+       }), 500
 
 
     
