@@ -2,7 +2,6 @@
 
 import React, { useContext, useState, useEffect } from "react";
 import SiteListForm from "./SiteListForm";
-import JoinLobby from "./JoinLobby";
 import "./buttons.css";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";

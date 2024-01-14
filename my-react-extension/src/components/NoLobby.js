@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import SiteListForm from "./SiteListForm";
-import JoinLobby from "./joinLobby";
 import cslFuncs from "./cslFuncs";
 import "./buttons.css";
 import { css } from "@emotion/react";
@@ -30,10 +29,18 @@ const NoLobby = () => {
     });
 
     cslFuncs.initialize("sites", webDict);
+    const printData = async () => {
+      const data = await cslFuncs.getData('sites')
+      console.log('test web init')
+      console.log(data)
+    };
+    printData();
+    
   };
 
   const handleCreateClick = () => {
-    navigate("/create_lobby");
+    initWebsites(9191);
+    //navigate("/create_lobby");
   };
 
   const handleJoinClick = () => {
@@ -92,5 +99,6 @@ const NoLobby = () => {
     </div>
   );
 };
+
 
 export default NoLobby;
