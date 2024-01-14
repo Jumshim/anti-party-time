@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SiteListForm from './SiteListForm';
 import JoinLobby from './joinLobby';
+import cslFuncs from './cslFuncs';
 import "./buttons.css";
 
 const NoLobby = () => {
@@ -9,6 +10,19 @@ const NoLobby = () => {
     const [lobbyKey, setLobbyKey] = useState('');
     const [submittedData, setSubmittedData] = useState(null);
     const [keyData, setKeyData] = useState('');
+
+    const initWebsites = (lobbyKey) => {
+
+        const websites = ['youtube','facebook','instagram'] //note*** replace with post call to get websites with lobbyKey 
+        const webDict = {};
+
+        websites.forEach(website => {
+            webDict[website] = 0;
+        });
+        
+        cslFuncs.initialize('sites', webDict);
+
+    };
 
     const handleFormSubmit = (websiteList) => {
         // Process the website list and obtain the lobby key (replace with your logic)
@@ -19,9 +33,6 @@ const NoLobby = () => {
     };
 
     const handleJoinSubmit = (keyData) => {
-
-
-
         setKeyData(keyData);
     };
     
