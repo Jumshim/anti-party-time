@@ -5,6 +5,7 @@ import {
   getCurrentUser,
   supabase,
 } from "../../components/Login";
+import cslFuncs from "../../components/cslFuncs";
 
 const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -12,11 +13,13 @@ const UserProvider = ({ children }) => {
   const [lobby, setLobby] = useState("");
   const [isAuthCheckComplete, setIsAuthCheckComplete] = useState(false);
 
+
   useEffect(() => {
     getCurrentUser().then((resp) => {
       if (resp) {
         setCurrentUser(resp.user);
         setAccessToken(resp.accessToken);
+        cslFuncs.initialize("user", resp.user.email);
       } else {
         console.log("user is not found");
       }

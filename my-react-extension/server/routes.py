@@ -47,7 +47,6 @@ def create_lobby():
       response = supabase.table('lobbies').insert({"hash": lobby_hash, "sites": sites}).execute()
       print(f"response: {response}")
       lobby = response.data[0]
-      print(f"lobby: {lobby}")
 
       print ("lobby: ", lobby)
 
@@ -108,8 +107,9 @@ def get_sites():
 @main.route('/tracklobby', methods=['GET'])
 def track_lobby():
     try:
-        data = request.get_json()
+        data = request.args
         lobby_hash = data.get('hash')
+        print("lobby hash: ", lobby_hash)
         lobby_id = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute().data[0]["id"]
         response = supabase.table('lobby_users').select('user_id').eq('lobby_id', lobby_id).execute().data
         users = [item['user_id'] for item in response]
@@ -241,13 +241,18 @@ def create_user2():
 @main.route('/sites_list', methods=['POST'])
 def watch_times():
    try:
+        print("ROUTING")
         data = request.get_json()
+        print("DATA: ", data)
         user_email = data.get('user_email')
         user = get_user(user_email)
         user_id = user['id']
         lobby_hash = data.get('hash')
         website = data.get('website')
         time_spent = data.get('time_spent')
+
+        print("DATA: ", data)
+        print("USER: ", user)
 
         lobbyIdResponse = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute()
         lobby_id = lobbyIdResponse.data[0]['id']
@@ -263,9 +268,9 @@ def watch_times():
 
         checkResponse = supabase.table('sites_list').select('*').eq('user_id', user_id).eq('website', website).execute()
 
-        print("checkResponse: ", checkResponse.count)
+        print("checkResponse: ", checkResponse)
 
-        if (checkResponse.count == 0): #insert
+        if (not checkResponse.data): #insert
            print("insert...")
            response = supabase.table('sites_list').insert({"user_id": user_id, "lobby_id": lobby_id, "website": website, "time_spent": time_spent}).execute()
         else: #update
