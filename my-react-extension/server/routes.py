@@ -53,6 +53,82 @@ def create_lobby():
       return jsonify({
          "status": "error",
       }), 500
+    
+
+# i want to get something like this
+# [
+#    {
+    #    user_id: {
+    #       name: "",
+    #       email: "",
+    #       sites: {
+    #          "yt.com" : 0,
+    #          "fb.com" : 1
+    #       }
+    #    }
+#    },
+#    user_id: {
+      
+#    }
+# ]
+
+@main.route('/getsites', methods=['GET'])
+def get_sites():
+    try:
+        data = request.get_json()
+        lobby_hash = data.get('hash')
+        response = supabase.table('lobbies').select('sites').eq('hash',hash).execute()
+        siteList = response.data[0]["sites"]
+
+        return jsonify({
+          "status": "success",
+          "data": siteList
+        }), 200
+
+    except Exception as e:
+       return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+    
+@main.route('/tracklobby', methods=['GET'])
+def track_lobby():
+    try:
+        data = request.get_json()
+        lobby_hash = data.get('hash')
+        lobby_id = supabase.table('lobbies').select('id').eq('hash', hash).execute().data[0]["id"]
+        response = supabase.table('lobby_users').select('user_id').eq('lobby_id', lobby_id).execute().data
+        users = [item['user_id'] for item in response]
+
+        #[1,2,3]
+
+        finalResponse = []
+
+        for user in users:
+            userData = {}
+            userData[user] = {}
+            userInfo = supabase.table('users').select('name', 'email').eq('id', user).execute().data
+            userData[user]["name"] = userInfo[0]["name"]
+            userData[user]["email"] = userInfo[0]["email"]
+
+            sitesData = {}
+            sitesResponse = supabase.table('sites_list').select('website', 'time_spent').eq('user_id', user).execute().data
+            for site in sitesResponse:
+                sitesData[site['website']] = site['time_spent']
+
+            userData[user]["sites"] = sitesData
+
+            finalResponse.append(userData)
+        return jsonify({
+          "status": "success",
+          "data": finalResponse
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+    
 
 @main.route('/lobby', methods=['POST'])
 def join_lobby():
@@ -89,7 +165,7 @@ def join_lobby():
        }), 500
     
 @main.route('/site', methods=['POST'])
-def track_lobby():
+def track_lobbi():
    data = request.get_json()
    #user_id = data.get('user_id')
    #time_spent = data.get('time_spent')
