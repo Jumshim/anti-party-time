@@ -8,11 +8,12 @@ main = Blueprint('main', __name__)
 @main.route('/user', methods=['POST'])
 def create_user():
    data = request.get_json()
-   data = supabase.table('users').insert({"email": data.get('email')}).execute()
+   data = supabase.table('users').insert({"email": data.get('email'), "name": data.get('name')}).execute()
    return jsonify({"message": f"User added successfully"}), 201
 
 def get_user(user_email):
    response = supabase.table('users').select('*').eq('email', user_email).execute()
+   print("getuser response: ", response.data[0])
    return response.data[0]
 
 @main.route('/', methods=['GET'])
@@ -38,7 +39,7 @@ def create_lobby():
       sites = data.get('sites')
       lobby_hash = generate_hash()
       #Creating the lobby
-      response = supabase.table('lobbies').insert({"hash": lobby_hash}).execute()
+      response = supabase.table('lobbies').insert({"hash": lobby_hash, "sites": sites}).execute()
       lobby = response.data[0]
 
       if user_email:
@@ -53,6 +54,101 @@ def create_lobby():
       return jsonify({
          "status": "error",
       }), 500
+    
+
+# i want to get something like this
+# [
+#    {
+    #    user_id: {
+    #       name: "",
+    #       email: "",
+    #       sites: {
+    #          "yt.com" : 0,
+    #          "fb.com" : 1
+    #       }
+    #    }
+#    },
+#    user_id: {
+      
+#    }
+# ]
+
+@main.route('/getsites', methods=['GET'])
+def get_sites():
+    try:
+        data = request.get_json()
+        lobby_hash = data.get('hash')
+        response = supabase.table('lobbies').select('sites').eq('hash',lobby_hash).execute()
+        siteList = response.data[0]["sites"]
+
+        return jsonify({
+          "status": "success",
+          "data": siteList
+        }), 200
+
+    except Exception as e:
+       return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+    
+@main.route('/tracklobby', methods=['GET'])
+def track_lobby():
+    try:
+        data = request.get_json()
+        lobby_hash = data.get('hash')
+        lobby_id = supabase.table('lobbies').select('id').eq('hash', lobby_hash).execute().data[0]["id"]
+        response = supabase.table('lobby_users').select('user_id').eq('lobby_id', lobby_id).execute().data
+        users = [item['user_id'] for item in response]
+        ranking = {}
+
+        #[1,2,3]
+
+        finalResponse = []
+
+        for user in users:
+            print("user id: ", user)
+            userData = {}
+            userData[user] = {}
+            userInfo = supabase.table('users').select('name', 'email').eq('id', user).execute().data
+            userData[user]["name"] = userInfo[0]["name"]
+            userData[user]["email"] = userInfo[0]["email"]
+
+            sitesData = {}
+            sitesResponse = supabase.table('sites_list').select('website', 'time_spent').eq('user_id',user).execute().data
+            print("siteResponse: ", sitesResponse)
+
+            totalTime = 0
+            for site in sitesResponse:
+                sitesData[site['website']] = site['time_spent']
+                totalTime += site['time_spent']
+            
+            ranking[user] = totalTime
+
+            userData[user]["sites"] = sitesData
+
+            finalResponse.append(userData)
+
+        print("ranking: ", ranking)
+        
+        sorted_ranking = dict(sorted(ranking.items(), key=lambda x: x[1], reverse=True))
+        
+        listRank = []
+
+        for index, (key,value) in enumerate(sorted_ranking.items()):
+           listRank.append((key, value, index+1))
+
+        return jsonify({
+          "status": "success",
+          "data": {"users": finalResponse,
+                   "ranking": listRank}
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+    
 
 @main.route('/lobby', methods=['POST'])
 def join_lobby():
@@ -89,7 +185,7 @@ def join_lobby():
        }), 500
     
 @main.route('/site', methods=['POST'])
-def track_lobby():
+def track_lobbi():
    data = request.get_json()
    #user_id = data.get('user_id')
    #time_spent = data.get('time_spent')
@@ -102,9 +198,6 @@ def track_lobby():
 
    data = {'website': website_url}
    supabase.table('sites_list').insert(data)
-
-
-
    return f'Successfully tracked visit to {website_url}'
 
 @main.route('/users', methods=['POST'])
@@ -170,5 +263,4 @@ def watch_times():
    except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-   
     
