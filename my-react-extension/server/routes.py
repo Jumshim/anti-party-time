@@ -32,7 +32,7 @@ def generate_hash():
 def create_lobby():
     try:
       print('trying to json request')
-      data = request.json()
+      data = request.get_json()
 
       #pulling the user id
       print("CREATING LOBBY")

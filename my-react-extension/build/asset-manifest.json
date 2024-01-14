@@ -1,41 +1,13 @@
 {
   "files": {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "main.css": "/static/css/main.98fba249.css",
-<<<<<<< HEAD
-    "main.js": "/static/js/main.78abca8b.js",
-=======
-    "main.js": "/static/js/main.029fd837.js",
-=======
     "main.css": "/static/css/main.daf81ba8.css",
-    "main.js": "/static/js/main.93593143.js",
->>>>>>> 4fdd4522 (initial commits)
->>>>>>> 37770e61 (initial commits)
-=======
-    "main.css": "/static/css/main.daf81ba8.css",
-    "main.js": "/static/js/main.725d090c.js",
->>>>>>> 1548e1ab (add sites)
+    "main.js": "/static/js/main.86f04d84.js",
     "static/js/720.f94ca596.chunk.js": "/static/js/720.f94ca596.chunk.js",
     "static/js/27.5b4f0d41.chunk.js": "/static/js/27.5b4f0d41.chunk.js",
     "index.html": "/index.html"
   },
   "entrypoints": [
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "static/css/main.98fba249.css",
-<<<<<<< HEAD
-    "static/js/main.78abca8b.js"
-=======
-    "static/js/main.029fd837.js"
-=======
     "static/css/main.daf81ba8.css",
-    "static/js/main.93593143.js"
->>>>>>> 4fdd4522 (initial commits)
->>>>>>> 37770e61 (initial commits)
-=======
-    "static/css/main.daf81ba8.css",
-    "static/js/main.725d090c.js"
->>>>>>> 1548e1ab (add sites)
+    "static/js/main.86f04d84.js"
   ]
 }

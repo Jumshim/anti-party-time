@@ -35,18 +35,17 @@ const CreateLobby = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [lobbyHash, setLobbyHash] = useState("");
-  const [sites, setSites] = useState([]);
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
   const [siteList, setSiteList] = useState([]);
 
   const getLobby = async () => {
     console.log(
-      `getting lobby with user_email: ${currentUser.email}, sites: ${sites}`
+      `getting lobby with user_email: ${currentUser.email}, sites: ${siteList}`
     );
     const queryParams = {
       user_email: currentUser.email,
-      sites: sites,
+      sites: siteList,
     };
 
     const response = fetch("http://127.0.0.1:5000/createlobby", {
@@ -68,10 +67,17 @@ const CreateLobby = () => {
   };
 
   useEffect(() => {
-    setSiteList(location.state?.sites).then(() => {
+    const newSiteList = location.state?.sites;
+    if (newSiteList && newSiteList.length > 0) {
+      setSiteList(newSiteList);
+    }
+  }, [location.state?.sites]);
+
+  useEffect(() => {
+    if (siteList.length > 0) {
       getLobby();
-    });
-  }, []);
+    }
+  }, [siteList]);
 
   return (
     <div css={MainDiv}>
