@@ -55,29 +55,88 @@ const CreateLobby = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(queryParams),
+    }).then((response) => {
+      return response?.json();
     })
-      .then((response) => {
-        return response?.json();
+    .then((data) => {
+      setLobbyHash(data.data.lobby_hash);
+    });
+};
+
+useEffect(() => {
+  const newSiteList = location.state?.sites;
+  if (newSiteList && newSiteList.length > 0) {
+    setSiteList(newSiteList);
+  }
+}, [location.state?.sites]);
+
+useEffect(() => {
+  if (siteList.length > 0) {
+    getLobby();
+  }
+}, [siteList]);
+
+  const getSites = async (lobbyKey) => {
+    const queryParams = new URLSearchParams({
+        hash: lobbyKey //place holder for lobby hash
+    });
+
+    const response = await fetch("http://127.0.0.1:5000/getsites?" + queryParams, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
       })
-      .then((data) => {
-        console.log(`setting lobby hash`);
-        setLobbyHash(data.data.lobby_hash);
-        console.log(`access token: ${accessToken}`);
-      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch lobby. Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setSiteList(data?.data?.siteList);
+      return data;
+  };
+
+  const InitWebsites = (siteList) => {
+    let websites = siteList;
+    //note*** replace with post call to get websites with lobbyKey
+    const webDict = {};
+
+    console.log("CREATELOBBY: ", websites)
+
+    websites.forEach((website) => {
+      webDict[website] = 0;
+    });
+
+    console.log(webDict);
+
+    cslFuncs.initialize("sites", webDict);
   };
 
   useEffect(() => {
-    const newSiteList = location.state?.sites;
-    if (newSiteList && newSiteList.length > 0) {
-      setSiteList(newSiteList);
-    }
-  }, [location.state?.sites]);
-
-  useEffect(() => {
-    if (siteList.length > 0) {
-      getLobby();
-    }
-  }, [siteList]);
+    const fetchData = async () => {
+      try {
+        const lobbyResponse = await getLobby();
+        console.log('Lobby Response:', lobbyResponse);
+  
+        if (lobbyResponse) {
+          const lobbyHash = lobbyResponse?.data?.lobby_hash;
+          
+          if (lobbyHash) {
+            const sitesResponse = await getSites(lobbyHash);
+            console.log('Sites Response:', sitesResponse);
+  
+            InitWebsites(sitesResponse.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
   return (
     <div css={MainDiv}>
