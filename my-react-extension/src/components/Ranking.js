@@ -16,40 +16,13 @@ const MainDiv = css`
   height: 400px;
 `;
 
-const CircularImage = css`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 0.1rem solid black;
-`;
-
-const ProfilePicture = ({ img }) => {
-  return (
-    <div
-      css={css`
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-        display: flex;
-        margin: 10px;
-      `}
-    >
-      <img css={CircularImage} src={img} />
-    </div>
-  );
-};
-
-export const Profile = () => {
+export const Ranking = () => {
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
 
   const navigate = useNavigate();
-  const [siteList, setSiteList] = useState([]);
 
-  useEffect(() => {
-    const fetchScreenTime = async () => {};
-  });
+  useEffect(() => {});
 
   return (
     <div css={MainDiv}>
@@ -64,10 +37,9 @@ export const Profile = () => {
           width: 80%;
         `}
       >
-        <ProfilePicture img={currentUser.user_metadata.picture} />
         <text
           css={css`
-            ${typography.h3}
+            ${typography.h1}
             padding: 10px;
             width: 100%;
             display: flex;
@@ -75,14 +47,11 @@ export const Profile = () => {
             justify-content: center;
           `}
         >
-          {" "}
-          {currentUser.user_metadata.name}
+          Ranking
         </text>
       </div>
-
-      <Link to="/ranking">Ranking</Link>
     </div>
   );
 };
 
-export default Profile;
+export default Ranking;
