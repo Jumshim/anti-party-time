@@ -2,6 +2,7 @@
 // import storage from './storage.js';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const url = "http://127.0.0.1:5000/";
 
 fetch(url)
@@ -18,6 +19,9 @@ fetch(url)
   .catch((error) => {
     console.error("Error:", error);
   });
+=======
+
+>>>>>>> f27ada44 (finished background work)
 
 // console.log("background.js loading...");
 =======
