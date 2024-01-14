@@ -35,6 +35,7 @@ def create_lobby():
       #pulling the user id
 
       user_email = data.get('user_email')
+      sites = data.get('sites')
       lobby_hash = generate_hash()
       #Creating the lobby
       response = supabase.table('lobbies').insert({"hash": lobby_hash}).execute()
@@ -43,7 +44,7 @@ def create_lobby():
       if user_email:
         user = get_user(user_email)
         if user:
-           data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id']}).execute()
+           data = supabase.table('lobby_users').insert({"user_id": user['id'], "lobby_id": lobby['id'], "sites": sites}).execute()
       return jsonify({
           "status": "success",
           "data": {"lobby_hash": lobby_hash}
@@ -105,6 +106,7 @@ def track_lobby():
 
 
    return f'Successfully tracked visit to {website_url}'
+
 
 
     
