@@ -39,7 +39,7 @@ Date.prototype.toISOString = function iso() {
     }.${(this.getMilliseconds() / 1000).toFixed(3).slice(2, 5)}`;
 };
 
-export default{
+export default {
 
     formatTime(timeString) {
         const [hour, minute] = timeString.split(':');
