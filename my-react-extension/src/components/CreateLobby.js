@@ -1,12 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
 import React, { useContext, useState, useEffect } from "react";
-import SiteListForm from "./SiteListForm";
-import "./buttons.css";
 import { css } from "@emotion/react";
 import { typography } from "../assets/js/typography";
 import { buttonStyles } from "../assets/js/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../assets/js/UserContext";
 import cslFuncs from "./cslFuncs";
 
@@ -35,6 +33,7 @@ const SingleCharacter = ({ char }) => {
 
 const CreateLobby = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [lobbyHash, setLobbyHash] = useState("");
   const { currentUser, accessToken, isAuthCheckComplete } =
     useContext(UserContext);
@@ -43,7 +42,7 @@ const CreateLobby = () => {
   const getLobby = async () => {
     const queryParams = {
       user_email: currentUser.email,
-      sites: ["instagram", "youtube"]
+      sites: sites,
     };
 
     const response = await fetch("http://127.0.0.1:5000/createlobby?", {
@@ -62,44 +61,10 @@ const CreateLobby = () => {
       });
   };
 
-  const getSites = async (lobbyKey) => {
-    const queryParams = new URLSearchParams({
-        hash: lobbyKey //place holder for lobby hash
-    });
-
-    const response = await fetch("http://127.0.0.1:5000/getsites?" + queryParams, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        return response?.json();
-      })
-      .then((data) => {
-        console.log("data: ", data)
-        setSiteList(data?.data?.siteList);
-      });
-  };
-
-  const initWebsites = (lobbyKey) => {
-    const response = getSites(lobbyKey);
-    const websites = siteList; //note*** replace with post call to get websites with lobbyKey
-    const webDict = {};
-
-    console.log("CREATELOBBY: ", websites)
-
-    websites.forEach((website) => {
-      webDict[website] = 0;
-    });
-
-    cslFuncs.initialize("sites", webDict);
-  };
-
   useEffect(() => {
-    getLobby();
-    initWebsites(lobbyHash);
+    setSiteList(location.state?.sites).then(() => {
+      getLobby();
+    });
   }, []);
 
   return (

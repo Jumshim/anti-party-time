@@ -1,6 +1,7 @@
 // import utils from './js';
 // import storage from './storage.js';
 
+<<<<<<< HEAD
 const url = "http://127.0.0.1:5000/";
 
 fetch(url)
@@ -19,6 +20,9 @@ fetch(url)
   });
 
 // console.log("background.js loading...");
+=======
+console.log("background.js loading...");
+>>>>>>> 37770e61 (initial commits)
 
 //storage commands
 
